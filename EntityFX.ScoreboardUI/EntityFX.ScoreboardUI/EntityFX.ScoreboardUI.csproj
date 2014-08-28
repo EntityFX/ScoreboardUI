@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E3989F5D-632D-4625-982D-F4651133B0C8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EntityFX.ScoreboardUI</RootNamespace>
+    <AssemblyName>EntityFX.ScoreboardUI</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CheckedChangeEventHandler.cs" />
+    <Compile Include="Drawing\Point.cs" />
+    <Compile Include="Elements\Controls\ComboBox.cs" />
+    <Compile Include="Elements\Controls\Control.cs" />
+    <Compile Include="Elements\Controls\BorderPanel.cs" />
+    <Compile Include="Elements\Controls\Button.cs" />
+    <Compile Include="Elements\Controls\ButtonBase.cs" />
+    <Compile Include="Elements\Controls\Checkbox.cs" />
+    <Compile Include="Elements\Controls\ControlBase.cs" />
+    <Compile Include="Elements\Controls\Image.cs" />
+    <Compile Include="Elements\Controls\Label.cs" />
+    <Compile Include="Elements\Controls\ListControlBase.cs" />
+    <Compile Include="Elements\Controls\Panel.cs" />
+    <Compile Include="Elements\Controls\PositionEnum.cs" />
+    <Compile Include="Elements\Controls\ProgressBar.cs" />
+    <Compile Include="Elements\Controls\RadioButton.cs" />
+    <Compile Include="Elements\Controls\RichtextBox.cs" />
+    <Compile Include="Elements\Controls\StatusBar\IStatusStripItem.cs" />
+    <Compile Include="Elements\Controls\StatusBar\StatusStrip.cs" />
+    <Compile Include="Elements\Controls\StatusBar\StatusStripButton.cs" />
+    <Compile Include="Elements\Controls\StatusBar\StatusStripItem.cs" />
+    <Compile Include="Elements\Controls\StatusBar\StatusStripItemLocationEnum.cs" />
+    <Compile Include="Elements\Controls\StatusBar\StatusStripLabel.cs" />
+    <Compile Include="Elements\Controls\StatusBar\StatusStripProgressBar.cs" />
+    <Compile Include="Elements\Controls\Table\Table.cs" />
+    <Compile Include="Elements\Controls\Table\TableButtonCellBaseBase.cs" />
+    <Compile Include="Elements\Controls\Table\TableCell.cs" />
+    <Compile Include="Elements\Controls\Table\TableCheckboxCell.cs" />
+    <Compile Include="Elements\Controls\Table\TableViewCell.cs" />
+    <Compile Include="Elements\Controls\Table\TableCellBase.cs" />
+    <Compile Include="Elements\Controls\Table\TableHeaderCell.cs" />
+    <Compile Include="Elements\Controls\Table\TableHeaderRow.cs" />
+    <Compile Include="Elements\Controls\Table\TableRow.cs" />
+    <Compile Include="Elements\Controls\Table\TableViewRow.cs" />
+    <Compile Include="Elements\Controls\TextBox.cs" />
+    <Compile Include="Elements\Controls\ToggleButtonBase.cs" />
+    <Compile Include="Elements\IBorderable.cs" />
+    <Compile Include="Elements\ILinearable.cs" />
+    <Compile Include="Elements\Controls\IProgressBar.cs" />
+    <Compile Include="Elements\IRenderable.cs" />
+    <Compile Include="Elements\ISizable.cs" />
+    <Compile Include="Elements\MessageBox\MessageBox.cs" />
+    <Compile Include="Elements\MessageBox\MessageBoxButtonsEnum.cs" />
+    <Compile Include="Elements\MessageBox\MessageBoxResultEnum.cs" />
+    <Compile Include="Elements\MessageBox\MessageBoxTypeEnum.cs" />
+    <Compile Include="Elements\Scoreboards\TitleAligment.cs" />
+    <Compile Include="Exceptions\ControlCantBeFocusedException.cs" />
+    <Compile Include="Exceptions\ScoreboardExceptoinBase.cs" />
+    <Compile Include="FocusChangeEventHandler.cs" />
+    <Compile Include="IScoreboardState.cs" />
+    <Compile Include="IStoreboardNavigationEngine.cs" />
+    <Compile Include="KeyEventArgs.cs" />
+    <Compile Include="Elements\Scoreboards\Scoreboard.cs" />
+    <Compile Include="IUiApplication.cs" />
+    <Compile Include="KeyPressEventHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Drawing\Size.cs" />
+    <Compile Include="Render\BorderCharType.cs" />
+    <Compile Include="Render\DefaultRenderer.cs" />
+    <Compile Include="Render\DefaultRenderOptions.cs" />
+    <Compile Include="Render\IRenderer.cs" />
+    <Compile Include="Render\IRenderOptions.cs" />
+    <Compile Include="ScoreboardContext.cs" />
+    <Compile Include="ScoreboardState.cs" />
+    <Compile Include="StateItem.cs" />
+    <Compile Include="StoreboardNavigationEngine.cs" />
+    <Compile Include="UiApplication.cs" />
+    <Compile Include="UiElement.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
