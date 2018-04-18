@@ -7,5 +7,7 @@ namespace EntityFX.ScoreboardUI
         public Scoreboard Scoreboard { get; set; }
 
         public IScoreboardState ScoreboardState { get; set; }
+        
+        public object NavigationData { get; set; }
     }
 }

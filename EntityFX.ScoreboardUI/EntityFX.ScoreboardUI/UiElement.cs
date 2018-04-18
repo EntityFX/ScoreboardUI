@@ -84,5 +84,29 @@ namespace EntityFX.ScoreboardUI
                 }
             }
         }
+
+        public virtual void Initialize()
+        {
+        }
+
+        protected virtual bool PreInitialize()
+        {
+            return true;
+        }
+
+        protected virtual void PostInitialize()
+        {
+        }
+
+        public event EventHandler<EventArgs> Initialized;
+
+        protected virtual void OnInitialized(EventArgs e)
+        {
+            EventHandler<EventArgs> handler = Initialized;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
     }
 }

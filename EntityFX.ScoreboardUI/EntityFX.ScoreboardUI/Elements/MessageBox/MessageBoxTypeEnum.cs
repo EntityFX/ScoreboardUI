@@ -5,6 +5,7 @@
         Error,
         Warning,
         Info,
-        Question
+        Question,
+        None
     }
 }

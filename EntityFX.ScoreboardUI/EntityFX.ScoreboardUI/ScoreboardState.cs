@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EntityFX.ScoreboardUI.Elements.Controls;
+using EntityFX.ScoreboardUI.Elements.Controls.Menu;
 using EntityFX.ScoreboardUI.Elements.Controls.StatusBar;
 
 namespace EntityFX.ScoreboardUI
@@ -79,7 +80,11 @@ namespace EntityFX.ScoreboardUI
                 }
 
                 control = _controlsList[_internalFocusIndex];
-            } while (!control.IsEnabled || (!(control is ButtonBase) && !(control is TextBox) && !(control is StatusStripButton) && !(control is ComboBox)));
+            } while (!control.IsEnabled || (!(control is ButtonBase) 
+            && !(control is TextBox) 
+            && !(control is StatusStripButton) 
+            && !(control is MenuItemButton<object>) 
+            && !(control is ComboBox)));
 
             ChangeFocus(control);
             previousControl.Render();

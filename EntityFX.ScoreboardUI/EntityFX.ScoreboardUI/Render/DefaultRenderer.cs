@@ -5,6 +5,7 @@ using System.Linq;
 using EntityFX.ScoreboardUI.Drawing;
 using EntityFX.ScoreboardUI.Elements;
 using EntityFX.ScoreboardUI.Elements.Controls;
+using EntityFX.ScoreboardUI.Elements.Controls.Menu;
 using EntityFX.ScoreboardUI.Elements.Controls.StatusBar;
 using EntityFX.ScoreboardUI.Elements.MessageBox;
 using EntityFX.ScoreboardUI.Elements.Scoreboards;
@@ -51,6 +52,11 @@ namespace EntityFX.ScoreboardUI.Render
                 {
                 }
 
+                if (scoreboard.Menu != null)
+                {
+                    RenderMenu(scoreboard);
+                }
+
                 if (scoreboard.StatusStrip != null)
                     RenderStatusStrip(scoreboard);
 
@@ -95,7 +101,32 @@ namespace EntityFX.ScoreboardUI.Render
             }
         }
 
+        private void RenderMenu(Scoreboard scoreboard)
+        {
+            var stripLocation = new Point
+            {
+                Left = 1,
+                Top = 1
+            };
+            var statusStripWidth = scoreboard.Size.Width + (scoreboard.IsBorderVisible ? -2 : 0);
+
+            RenderVerticalLine(
+                stripLocation,
+                statusStripWidth, '▒'
+            );
+
+            foreach (var menuItem in scoreboard.Menu.Controls)
+            {
+                RenderMenuItem(menuItem);
+            }
+        }
+
         private void RenderStripItem(StatusStripItem stripItem)
+        {
+            RenderControl(stripItem.InternalControl);
+        }
+
+        private void RenderMenuItem<TData>(MenuItem<TData> stripItem)
         {
             RenderControl(stripItem.InternalControl);
         }
@@ -152,8 +183,14 @@ namespace EntityFX.ScoreboardUI.Render
                 RenderLabel(label);
             }
 
+            var passwordBox = control as PasswordBox;
+            if (passwordBox != null)
+            {
+                RenderPasswordBox(passwordBox);
+            }
+
             var text = control as TextBox;
-            if (text != null)
+            if (text != null && !(control is PasswordBox))
             {
                 RenderTextBox(text);
             }
@@ -188,14 +225,42 @@ namespace EntityFX.ScoreboardUI.Render
                 RenderStripItem(stripItem);
             }
 
+            var menuItem = control as MenuItem<object>;
+            if (menuItem != null)
+            {
+                RenderMenuItem(menuItem);
+            }
+
             var comboBox = control as ComboBox;
             if (comboBox != null)
             {
                 RenderComboBox(comboBox);
             }
 
+            var listView = control as ListView;
+            if (listView != null)
+            {
+                RenderListView(listView);
+            }
+
             Console.ForegroundColor = previousForeground;
             Console.BackgroundColor = previousBackground;
+        }
+
+        private void RenderListView(ListView listView)
+        {
+            foreach (var listViewItemsControl in listView.ItemsControls)
+            {
+                RenderListViewItem(listViewItemsControl);
+            }
+        }
+
+        private void RenderListViewItem(ListViewItem listView)
+        {
+            foreach (var listViewItemsControl in listView.Controls)
+            {
+                Render(listViewItemsControl);
+            }
         }
 
         private static IEnumerable<ControlBase> GetOverlappedControls(Point startPoint, Point endPoint)
@@ -276,15 +341,17 @@ namespace EntityFX.ScoreboardUI.Render
                 Console.BackgroundColor = comboBox.BackgroundColor;
 
                 var startItem = comboBox.SelectedIndex >= comboBox.VisibleItemsCount ? comboBox.SelectedIndex - comboBox.VisibleItemsCount + 1 : 0;
-                for (int i = startItem; i < startItem + comboBox.VisibleItemsCount; i++)
+                for (int i = startItem; i < startItem + itemLinesToDraw; i++)
                 {
                     Console.SetCursorPosition(comboBox.Location.Left + 1, initialCurosrTopPosition);
                     if (comboBox.Items[i] == comboBox.Items[comboBox.SelectedIndex])
                     {
                         Console.BackgroundColor = ConsoleColor.DarkBlue;
+                        Console.ForegroundColor = comboBox.SelectedColor;
                     }
-                    Console.Write(comboBox.Items[i].ToString(CultureInfo.InvariantCulture));
+                    Console.Write(comboBox.Items[i].Text);
                     Console.BackgroundColor = comboBox.BackgroundColor;
+                    Console.ForegroundColor = comboBox.ForegroundColor;
                     ++initialCurosrTopPosition;
                 }
 
@@ -377,6 +444,21 @@ namespace EntityFX.ScoreboardUI.Render
             Console.Write(new string(' ', textBox.InputLength));
             Console.SetCursorPosition(textBox.Location.Left, textBox.Location.Top);
             Console.Write(textBox.VisibleText);
+        }
+
+
+        private void RenderPasswordBox(PasswordBox textBox)
+        {
+            Console.Write(new string(' ', textBox.InputLength));
+            Console.SetCursorPosition(textBox.Location.Left, textBox.Location.Top);
+            if (textBox.IsFocused && textBox.VisibleText.Length > 0)
+            {
+                Console.Write(new String('*', textBox.VisibleText.Length - 1) + textBox.VisibleText[textBox.VisibleText.Length - 1]);
+            }
+            else
+            {
+                Console.Write(new String('*', textBox.VisibleText.Length));
+            }
         }
 
         private void RenderButton(Button button)

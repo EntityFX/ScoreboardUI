@@ -6,11 +6,11 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
     {
         private bool _renderChildren = true;
         
-        private readonly IList<T> _controls = new List<T>();
+        protected readonly IList<T> controls = new List<T>();
 
         public IEnumerable<T> Controls
         {
-            get { return _controls; }
+            get { return controls; }
         }
 
         protected override void ReRender()
@@ -22,7 +22,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 
         public virtual void AddChild(T childControl)
         {
-            _controls.Add(childControl);
+            controls.Add(childControl);
             childControl.Parent = this;
             ScoreboardContext.CurrentState.AddToControlList(childControl);
             childControl.CompositionLevel = CompositionLevel + 1;
@@ -32,9 +32,17 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
         {
             if (_renderChildren)
             {
-                ((List<T>)_controls).ForEach(c => c.Render());
+                ((List<T>)controls).ForEach(c => c.Render());
             }
         }
 
+        public override void Initialize()
+        {
+            base.Initialize();
+            foreach (var rootPanelControl in Controls)
+            {
+                rootPanelControl.Initialize();
+            }
+        }
     }
 }

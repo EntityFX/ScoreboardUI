@@ -11,10 +11,10 @@ namespace EntityFX.ScoreboardUI
 
         StateItem Current { get; set; }
 
-        void GoBack();
+        void GoBack(object data = null);
 
-        void Navigate<TScoreboard>() where TScoreboard : Scoreboard, new();
+        void Navigate<TScoreboard>(object data = null) where TScoreboard : Scoreboard, new();
 
-        void Navigate(Scoreboard scoreboard);
+        void Navigate(Scoreboard scoreboard, object data = null);
     }
 }

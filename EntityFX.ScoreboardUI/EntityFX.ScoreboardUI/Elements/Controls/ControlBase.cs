@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using EntityFX.ScoreboardUI.Drawing;
 using EntityFX.ScoreboardUI.Elements.Scoreboards;
 using EntityFX.ScoreboardUI.Exceptions;
 
 namespace EntityFX.ScoreboardUI.Elements.Controls
 {
-    public abstract class ControlBase : UiElement
+    public abstract class ControlBase : UiElement, ICloneable
     {
 
         private readonly object _object = new object();
@@ -135,10 +136,22 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
             do
             {
                 control = parent as ControlBase;
-                res = res + parent.Location;
-                if (control != null) parent = control.Parent;
+                if (parent != null)
+                {
+                    res = res + parent.Location;
+                }
+
+                if (control != null)
+                {
+                    parent = control.Parent;
+                }
             } while (control != null);
             return res;
         }
+
+        public object Clone()
+        {
+            return this.Copy();
+        }
     }
-}
+}       

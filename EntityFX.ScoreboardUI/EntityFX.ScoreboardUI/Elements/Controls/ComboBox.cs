@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Globalization;
 
 namespace EntityFX.ScoreboardUI.Elements.Controls
 {
-    public class ComboBox : ListControlBase<string>, ILinearable
+    public class ComboBox : ListControlBase<ComboBoxItem>, ILinearable
     {
         public ComboBox()
         {
@@ -11,16 +10,17 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
             BackgroundColor = ConsoleColor.White;
             ForegroundColor = ConsoleColor.Blue;
             ExpanderBackground = ConsoleColor.Gray;
+            SelectedColor = ConsoleColor.Yellow;
             VisibleItemsCount = 5;
         }
 
         public ConsoleColor ExpanderBackground { get; set; }
 
+        public ConsoleColor SelectedColor { get; set; }
+
         public bool DroppedDown { get; set; }
 
         public int VisibleItemsCount { get; set; }
-
-        public event EventHandler SelectedIndexChanged;
 
         public event EventHandler DropDown;
 
@@ -28,12 +28,12 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 
         public override string Text
         {
-            get { return SelectedIndex == -1 ? string.Empty : Items[SelectedIndex].ToString(CultureInfo.InvariantCulture); }
+            get { return SelectedIndex == -1 || Items.Count == 0 ? string.Empty : Items[SelectedIndex].Text; }
             set
             {
                 if (SelectedIndex >= 0)
                 {
-                    Items[SelectedIndex] = value;
+                    Items[SelectedIndex].Text = value;
                 }
             }
         }
@@ -54,12 +54,14 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
             if (e.KeyInfo.Key == ConsoleKey.DownArrow && DroppedDown)
             {
                 SelectedIndex = SelectedIndex == Items.Count - 1? 0 : SelectedIndex + 1;
+                OnSelectedValueChanged(SelectedValue);
                 ReRender();
             }
 
             if (e.KeyInfo.Key == ConsoleKey.UpArrow && DroppedDown)
             {
                 SelectedIndex = SelectedIndex == 0 ? Items.Count - 1 : SelectedIndex - 1;
+                OnSelectedValueChanged(SelectedValue);
                 ReRender();
             }
         }

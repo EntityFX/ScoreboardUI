@@ -1,6 +1,7 @@
 ﻿using System;
 using EntityFX.ScoreboardUI.Drawing;
 using EntityFX.ScoreboardUI.Elements.Controls;
+using EntityFX.ScoreboardUI.Elements.Controls.Menu;
 using EntityFX.ScoreboardUI.Elements.Controls.StatusBar;
 
 namespace EntityFX.ScoreboardUI.Elements.Scoreboards
@@ -51,18 +52,35 @@ namespace EntityFX.ScoreboardUI.Elements.Scoreboards
             }
         }
 
-        public event EventHandler<EventArgs> Initialized;
+        private Menu _menu;
+        public Menu Menu
+        {
+            get { return _menu; }
+            set
+            {
+                _menu = value;
+                _menu.Parent = this;
+                var stripLocation = new Point
+                {
+                    Left = IsBorderVisible ? 1 : 0,
+                    Top = 1
+                };
+                _menu.Location = stripLocation;
+            }
+        }
+        
+        public event EventHandler<NavigatedEventArgs> ScoreboardNavigate;
 
         public event EventHandler EscapePress;
 
-        public void Navigate<TScoreboard>() where TScoreboard : Scoreboard, new()
+        public void Navigate<TScoreboard>(object data = null) where TScoreboard : Scoreboard, new()
         {
-            ScoreboardContext.Navigation.Navigate<TScoreboard>();
+            ScoreboardContext.Navigation.Navigate<TScoreboard>(data);
         }
 
-        public void GoBack()
+        public virtual void GoBack(object data = null)
         {
-            ScoreboardContext.Navigation.GoBack();
+            ScoreboardContext.Navigation.GoBack(data);
         }
 
         public override void PressKey(KeyPressEventArgs e)
@@ -73,22 +91,12 @@ namespace EntityFX.ScoreboardUI.Elements.Scoreboards
                 focusedElement.PressKey(e);
         }
 
-        protected virtual void Initialize()
-        {
-        }
 
-        protected virtual bool PreInitialize()
-        {
-            return true;
-        }
 
-        protected virtual void PostInitialize()
+        
+        protected virtual void OnScoreboardNavigated(NavigatedEventArgs e)
         {
-        }
-
-        protected virtual void OnInitialized(EventArgs e)
-        {
-            EventHandler<EventArgs> handler = Initialized;
+            EventHandler<NavigatedEventArgs> handler = ScoreboardNavigate;
             if (handler != null)
             {
                 handler(this, e);
@@ -123,9 +131,29 @@ namespace EntityFX.ScoreboardUI.Elements.Scoreboards
                 PostInitialize();
             }
         }
+        
+        internal void NavigateInternal(NavigationType navigationType, object navigationData)
+        {
+        	OnScoreboardNavigated(new NavigatedEventArgs() { Data = navigationData, NavigationType = navigationType});
+        	ScoreboardNavigated(navigationData);
+        }
+        
+        protected virtual void ScoreboardNavigated(object navigationData)
+        {
+        	
+        }
 
         protected override void PostRender()
         {
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            foreach (var rootPanelControl in RootPanel.Controls)
+            {
+                rootPanelControl.Initialize();
+            }
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using EntityFX.ScoreboardUI.Drawing;
 using EntityFX.ScoreboardUI.Elements.Controls;
+using EntityFX.ScoreboardUI.Elements.Controls.Menu;
 using EntityFX.ScoreboardUI.Elements.Scoreboards;
 
 namespace EntityFX.ScoreboardUI.Elements.MessageBox
@@ -9,6 +12,8 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
     public class MessageBox : Scoreboard
     {
         private readonly MessageBoxButtonsEnum _buttonsType;
+        private readonly MessageBoxButtonsDirectionEnum _direction;
+        private readonly IEnumerable<SubmenuContext<object>> _buttonsList;
         private readonly string _message;
 
         private readonly MessageBoxTypeEnum _messageBoxType;
@@ -16,51 +21,92 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
 
         private Image _messageBoxImage;
 
-        private Action<MessageBoxResultEnum> _result;
+        private Action<MessageBoxResultEnum, object> _result;
 
-        public MessageBox(string message, Action<MessageBoxResultEnum> result, string title, MessageBoxTypeEnum type,
-            MessageBoxButtonsEnum buttons)
+        public MessageBox(string message, Action<MessageBoxResultEnum, object> result, string title, MessageBoxTypeEnum type,
+            MessageBoxButtonsEnum buttons, 
+            MessageBoxButtonsDirectionEnum direction = MessageBoxButtonsDirectionEnum.Horizontal)
             : base(new Panel())
         {
             _message = message;
             _buttonsType = buttons;
+            _direction = direction;
             _messageBoxType = type;
             _result = result;
             Title = title;
         }
 
-        public static void Show(string message, Action<MessageBoxResultEnum> resultAction, string title)
+        public MessageBox(string message, Action<MessageBoxResultEnum, object> result, string title, MessageBoxTypeEnum type,
+            MessageBoxButtonsDirectionEnum direction = MessageBoxButtonsDirectionEnum.Horizontal,
+            IEnumerable<SubmenuContext<object>> buttonsList = null)
+            : base(new Panel())
+        {
+            _message = message;
+            _direction = direction;
+            _buttonsList = buttonsList;
+            _messageBoxType = type;
+            _result = result;
+            Title = title;
+        }
+
+        public static void Show(string message, Action<MessageBoxResultEnum, object> resultAction, string title)
         {
             Show(message, resultAction, title, MessageBoxTypeEnum.Info, MessageBoxButtonsEnum.Ok);
         }
 
-        public static void Show(string message, Action<MessageBoxResultEnum> resultAction, string title,
+        public static void Show(string message, Action<MessageBoxResultEnum, object> resultAction, string title,
             MessageBoxTypeEnum type)
         {
             Show(message, resultAction, title, type, MessageBoxButtonsEnum.Ok);
         }
 
-        public static void Show(string message, Action<MessageBoxResultEnum> resultAction = null,
+        public static void Show(string message, Action<MessageBoxResultEnum, object> resultAction = null,
             string title = "Message", MessageBoxTypeEnum type = MessageBoxTypeEnum.Info,
-            MessageBoxButtonsEnum buttons = MessageBoxButtonsEnum.Ok)
+            MessageBoxButtonsEnum buttons = MessageBoxButtonsEnum.Ok, 
+            MessageBoxButtonsDirectionEnum direction = MessageBoxButtonsDirectionEnum.Horizontal, IEnumerable<SubmenuContext<object>> buttonsList = null)
         {
-            int minWidth = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width/2;
-            int width = message.Length > minWidth ? message.Length + 2 : minWidth;
+            int width = 0;
             ScoreboardContext.CurrentState.IsNavigating = true;
-            var mb = new MessageBox(message, resultAction, title, type, buttons)
+            MessageBox mb;
+            if (buttonsList != null)
             {
-                BackgroundColor = ConsoleColor.DarkRed,
-                Size = new Size
+                int minWidth = 16;
+                var largestTextLength = buttonsList.Select(i => i.Text.Length).Max();
+                width = largestTextLength > minWidth ? largestTextLength + 6 : minWidth;
+                mb = new MessageBox(message, resultAction, title, type, direction, buttonsList)
                 {
-                    Height = 10,
-                    Width = width
-                },
-                Location = new Point
+                    BackgroundColor = ConsoleColor.DarkRed,
+                    Size = new Size
+                    {
+                        Height = direction == MessageBoxButtonsDirectionEnum.Horizontal ? 10 : buttonsList.Count() * 3 + 3,
+                        Width = width
+                    },
+                    Location = new Point
+                    {
+                        Left = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2 - width / 2,
+                        Top = ScoreboardContext.Navigation.Current.Scoreboard.Size.Height / 2 - 4
+                    }
+                };
+            }
+            else
+            {
+                int minWidth = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2;
+                width = message.Length > minWidth ? message.Length + 2 : minWidth;
+                mb = new MessageBox(message, resultAction, title, type, buttons, direction)
                 {
-                    Left = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width/2 - width/2,
-                    Top = ScoreboardContext.Navigation.Current.Scoreboard.Size.Height/2 - 4
-                }
-            };
+                    BackgroundColor = ConsoleColor.DarkRed,
+                    Size = new Size
+                    {
+                        Height = direction == MessageBoxButtonsDirectionEnum.Horizontal ? 10 : buttonsList.Count() * 3,
+                        Width = width
+                    },
+                    Location = new Point
+                    {
+                        Left = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2 - width / 2,
+                        Top = ScoreboardContext.Navigation.Current.Scoreboard.Size.Height / 2 - 4
+                    }
+                };
+            }
             ScoreboardContext.Navigation.Navigate(mb);
             Console.Beep();
         }
@@ -75,12 +121,12 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
             return "Ok";
         }
 
-        public static void Confirm(string message, Action<MessageBoxResultEnum> resultAction, string title)
+        public static void Confirm(string message, Action<MessageBoxResultEnum, object> resultAction, string title)
         {
             Show(message, resultAction, string.Empty, MessageBoxTypeEnum.Info, MessageBoxButtonsEnum.YesNo);
         }
 
-        protected override void Initialize()
+        public override void Initialize()
         {
             base.Initialize();
             BorderBackgroundColor = ConsoleColor.DarkRed;
@@ -91,7 +137,7 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
                 Location = new Point
                 {
                     Top = 2,
-                    Left = 5
+                    Left = Size.Width / 2 - _message.Length / 2 
                 },
                 BackgroundColor = BackgroundColor,
                 ForegroundColor = ConsoleColor.White
@@ -104,14 +150,44 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
         protected override void OnEscapePressed()
         {
             base.OnEscapePressed();
-            PerfomMessageBoxResultAction(MessageBoxResultEnum.None);
+            PerfomMessageBoxResultAction(MessageBoxResultEnum.None, null);  
         }
 
-        private void InitializeButtons()
+        private void InitializeCustomButtons()
         {
-            int buttonTop = Size.Height - 2;
             int buttonWidth = 10;
+            int buttonTopStep = 2;
+            int buttonStartTopPointer = 0;
 
+            var largestTextLength = _buttonsList.Select(i => i.Text.Length).Max();
+            buttonWidth = largestTextLength > 10 ? (largestTextLength + 2) : buttonWidth;
+
+            foreach (var context in _buttonsList)
+            {
+                var button = new Button
+                {
+                    Text = context.Text,
+                    Location = new Point
+                    {
+                        Left = this.Size.Width / 2 - (buttonWidth) / 2,
+                        Top = buttonStartTopPointer + 4
+                    },
+                    Width = buttonWidth,
+                    Tag = context.Data
+                };
+                Debug.WriteLine(this.Size.Width);
+                Debug.WriteLine(largestTextLength);
+                RootPanel.AddChild(button);
+                button.Pressed += button_Pressed;
+                buttonStartTopPointer += buttonTopStep;
+            }
+            return;
+        }
+
+        private void InitializeStandardButtons()
+        {
+            int buttonWidth = 10;
+            int buttonTop = Size.Height - 2;
             var resultButtonsDictionary = new Dictionary<MessageBoxResultEnum, string>
             {
                 {MessageBoxResultEnum.Ok, "Ok"},
@@ -166,8 +242,8 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
             };
 
             int buttonsCount = buttonTypeTextDisctionary[_buttonsType].Count;
-            int buttonAreaWidth = Size.Width/buttonsCount;
-            int buttonLeftStep = (buttonAreaWidth - buttonWidth)/2;
+            int buttonAreaWidth = Size.Width / buttonsCount;
+            int buttonLeftStep = (buttonAreaWidth - buttonWidth) / 2;
             int buttonStartLeftPointer = 0;
 
             foreach (var text in buttonTypeTextDisctionary[_buttonsType])
@@ -188,18 +264,32 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
             }
         }
 
+        private void InitializeButtons()
+        {
+
+            if (_buttonsList != null)
+            {
+                InitializeCustomButtons();
+            }
+            else
+            {
+                InitializeStandardButtons();
+            }
+        }
+
         private void button_Pressed(object sender, EventArgs e)
         {
             GoBack();
             var senderButton = (Button) sender;
-            PerfomMessageBoxResultAction((MessageBoxResultEnum) senderButton.Tag);
+            var enumResult = senderButton.Tag is MessageBoxResultEnum @enum ? @enum : MessageBoxResultEnum.None;
+            PerfomMessageBoxResultAction(enumResult, senderButton.Tag);
         }
 
-        private void PerfomMessageBoxResultAction(MessageBoxResultEnum messageBoxResult)
+        private void PerfomMessageBoxResultAction(MessageBoxResultEnum messageBoxResult, object data)
         {
             if (_result != null)
             {
-                _result(messageBoxResult);
+                _result(messageBoxResult, data);
                 _result = null;
             }
         }

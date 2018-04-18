@@ -1,25 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFX.ScoreboardUI", "EntityFX.ScoreboardUI\EntityFX.ScoreboardUI.csproj", "{E3989F5D-632D-4625-982D-F4651133B0C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFX.ScoreboardUI", "EntityFX.ScoreboardUI\EntityFX.ScoreboardUI.csproj", "{E3989F5D-632D-4625-982D-F4651133B0C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFx.ScorbordUI.TestExample", "EntityFx.ScorbordUI.TestExample\EntityFx.ScorbordUI.TestExample.csproj", "{E78DCCD0-3CDC-4773-9188-852A224D0F73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFX.ScoreboardUI.TestExample", "EntityFX.ScoreboardUI.TestExample\EntityFX.ScoreboardUI.TestExample.csproj", "{FDC7940C-27DE-4238-B875-7FB6DA98705C}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://entityfx.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = EntityFX.ScoreboardUI\\EntityFX.ScoreboardUI.csproj
-		SccProjectName1 = EntityFX.ScoreboardUI
-		SccLocalPath1 = EntityFX.ScoreboardUI
-		SccProjectUniqueName2 = EntityFx.ScorbordUI.TestExample\\EntityFx.ScorbordUI.TestExample.csproj
-		SccProjectName2 = EntityFx.ScorbordUI.TestExample
-		SccLocalPath2 = EntityFx.ScorbordUI.TestExample
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -29,12 +17,15 @@ Global
 		{E3989F5D-632D-4625-982D-F4651133B0C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3989F5D-632D-4625-982D-F4651133B0C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3989F5D-632D-4625-982D-F4651133B0C8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E78DCCD0-3CDC-4773-9188-852A224D0F73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E78DCCD0-3CDC-4773-9188-852A224D0F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E78DCCD0-3CDC-4773-9188-852A224D0F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E78DCCD0-3CDC-4773-9188-852A224D0F73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDC7940C-27DE-4238-B875-7FB6DA98705C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDC7940C-27DE-4238-B875-7FB6DA98705C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDC7940C-27DE-4238-B875-7FB6DA98705C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDC7940C-27DE-4238-B875-7FB6DA98705C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8622041C-A53E-4034-A6AC-BF68EF6DC261}
 	EndGlobalSection
 EndGlobal

@@ -17,14 +17,16 @@ namespace EntityFX.ScoreboardUI
 
         public StateItem Current { get; set; }
 
-        public void GoBack()
+        public void GoBack(object data = null)
         {
             Previous = _scoreboardNavigationStack.Pop();
             if (_scoreboardNavigationStack.Count != 0)
             {
                 StateItem stateItem = _scoreboardNavigationStack.Peek();
+                stateItem.NavigationData = data;
                 Current = stateItem;
                 Current.Scoreboard.IsVisible = true;
+                Current.Scoreboard.NavigateInternal(NavigationType.GoBack, stateItem.NavigationData);
                 Current.Scoreboard.Render();
             }
             else
@@ -33,10 +35,10 @@ namespace EntityFX.ScoreboardUI
             }
         }
 
-        public void Navigate<TScoreboard>() where TScoreboard : Scoreboard, new()
+        public void Navigate<TScoreboard>(object data = null) where TScoreboard : Scoreboard, new()
         {
             StateItem firstOrDefault =
-                _scoreboardNavigationStack.FirstOrDefault(_ => _.GetType() == typeof (TScoreboard));
+                _scoreboardNavigationStack.FirstOrDefault(_ => _ is TScoreboard);
             Scoreboard scoreboard;
             if (firstOrDefault != null)
             {
@@ -56,15 +58,16 @@ namespace EntityFX.ScoreboardUI
                 Current.ScoreboardState.IsNavigating = true;
                 scoreboard = new TScoreboard();
             }
-            Navigate(scoreboard);
+            Navigate(scoreboard, data);
         }
 
-        public void Navigate(Scoreboard scoreboard)
+        public void Navigate(Scoreboard scoreboard, object data = null)
         {
             var stateItem = new StateItem
             {
                 Scoreboard = scoreboard,
-                ScoreboardState = new ScoreboardState()
+                ScoreboardState = new ScoreboardState(),
+                NavigationData = data
             };
 
             Current.ScoreboardState.IsNavigating = false;
@@ -80,6 +83,7 @@ namespace EntityFX.ScoreboardUI
 
             _scoreboardNavigationStack.Push(stateItem);
             if (!Current.ScoreboardState.ScoreboardInitialized) Current.Scoreboard.InitializeInternal();
+            Current.Scoreboard.NavigateInternal(NavigationType.Navigate, stateItem.NavigationData);
             scoreboard.Render();
             ScoreboardContext.CurrentState.ResetFocus();
         }

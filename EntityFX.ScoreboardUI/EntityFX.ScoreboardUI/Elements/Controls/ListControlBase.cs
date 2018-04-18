@@ -5,18 +5,22 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 {
     public class ListControlBase<TListItem> : ControlBase where TListItem : class
     {
-        private readonly List<TListItem> _items;
+        private List<TListItem> _items;
 
         private int _selectedIndexInternal;
 
         public ListControlBase(List<TListItem> items = null)
         {
-            _items = items ?? new List<TListItem>();
+            Items = items ?? new List<TListItem>();
         }
 
         public List<TListItem> Items
         {
             get { return _items; }
+            set
+            {
+                _items = value;
+            }
         }
 
         public TListItem SelectedValue
@@ -55,6 +59,22 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
             }
         }
 
-        public event EventHandler SelectedValueChanged;
+        public event EventHandler<TListItem> SelectedValueChanged;
+
+        protected virtual void OnItemsChanged()
+        {
+            
+        }
+
+        public override void Initialize()
+        {
+            OnItemsChanged();
+            base.Initialize();
+        }
+
+        protected virtual void OnSelectedValueChanged(TListItem e)
+        {
+            SelectedValueChanged?.Invoke(this, e);
+        }
     }
 }
