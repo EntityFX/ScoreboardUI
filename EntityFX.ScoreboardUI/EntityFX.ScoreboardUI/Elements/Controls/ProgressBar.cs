@@ -17,8 +17,8 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
             Maximum = 100;
             Step = 1;
             Width = 20;
-            BackgroundColor = ConsoleColor.DarkGray;
-            StripeColor = ConsoleColor.DarkMagenta;
+            BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.SecondaryBackgroundColor;
+            StripeColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.SecondaryForegroundColor;
             Text = "Complete {0} %";
             TextAligment = TitleAligment.Center;
         }

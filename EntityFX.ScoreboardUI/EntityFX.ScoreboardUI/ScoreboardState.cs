@@ -24,6 +24,7 @@ namespace EntityFX.ScoreboardUI
                 itemControl.IsFocused = false;
             }
             control.IsFocused = true;
+
         }
 
         public int InternalTabIndex
@@ -85,6 +86,34 @@ namespace EntityFX.ScoreboardUI
             && !(control is StatusStripButton) 
             && !(control is MenuItemButton<object>) 
             && !(control is ComboBox)));
+
+            ChangeFocus(control);
+            previousControl.Render();
+            control.Render();
+        }
+
+        public void PreviousFocus()
+        {
+            ControlBase control;
+
+            if (_controlsList.Count == 0) return;
+
+            var previousControl = _internalFocusIndex == _controlsList.Count - 1 ? _controlsList[0] : _controlsList[_internalFocusIndex];
+            do
+            {
+                _internalFocusIndex--;
+
+                if (_internalFocusIndex == -1)
+                {
+                    _internalFocusIndex = _controlsList.Count - 1;
+                }
+
+                control = _controlsList[_internalFocusIndex];
+            } while (!control.IsEnabled || (!(control is ButtonBase)
+                                            && !(control is TextBox)
+                                            && !(control is StatusStripButton)
+                                            && !(control is MenuItemButton<object>)
+                                            && !(control is ComboBox)));
 
             ChangeFocus(control);
             previousControl.Render();

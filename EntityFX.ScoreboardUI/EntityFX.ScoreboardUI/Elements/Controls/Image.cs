@@ -1,4 +1,6 @@
-﻿using EntityFX.ScoreboardUI.Drawing;
+﻿using System;
+using System.Linq;
+using EntityFX.ScoreboardUI.Drawing;
 
 namespace EntityFX.ScoreboardUI.Elements.Controls
 {
@@ -30,5 +32,23 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
         }
 
         public Size Size { get; set; }
+
+        public static Image FromString(string text)
+        {
+            var strings = text.Split('\n').Select(s => s.Replace("\r", "")).ToArray();
+            var maxString = strings.Max(s => s.Length);
+            char[,] imgChar = new Char[strings.Length, maxString];
+
+
+            for (int y = 0; y < strings.Length; y++)
+            {
+                for (int x = 0; x < strings[y].Length; x++)
+                {
+                    imgChar[y, x] = strings[y][x];
+                }
+            }
+
+            return new Image(imgChar);
+        }
     }
 }

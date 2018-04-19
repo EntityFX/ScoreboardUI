@@ -15,8 +15,8 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.Menu
 
         public Menu()
         {
-            BackgroundColor = ConsoleColor.DarkGray;
-            ForegroundColor = ConsoleColor.Black;
+            BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MenuBackgroundColor;
+            ForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MenuForegroundColor;
         }
 
         public override void AddChild(MenuItem<object> childControl)

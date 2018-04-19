@@ -45,7 +45,7 @@ namespace EntityFX.ScoreboardUI
 
         private void PerformStepInternal()
         {
-            PressedKey = Console.ReadKey(true);
+            PressedKey = ScoreboardContext.RenderEngine.ConsoleAdapter.ReadKey(true);
             KeyPressEventHandler handler = KeyPress;
             var keyPressArgs = new KeyPressEventArgs
             {
@@ -59,9 +59,19 @@ namespace EntityFX.ScoreboardUI
                 ScoreboardContext.Navigation.Current.Scoreboard.PressEscape(keyPressArgs);
             }
 
-            if (PressedKey.Key == FocusKey)
+            if (PressedKey.Key == FocusKey && (PressedKey.Modifiers & ConsoleModifiers.Control) == 0)
             {
                 ScoreboardContext.CurrentState.NextFocus();
+            }
+
+            if (PressedKey.Key == FocusKey && (PressedKey.Modifiers & ConsoleModifiers.Control) != 0)
+            {
+                ScoreboardContext.CurrentState.PreviousFocus();
+            }
+
+            if (PressedKey.Key == ConsoleKey.R && (PressedKey.Modifiers & ConsoleModifiers.Control) != 0)
+            {
+                ScoreboardContext.Navigation.Current.Scoreboard.Render();
             }
 
             if (handler != null)

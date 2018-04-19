@@ -15,6 +15,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 
 
         private string _textValue;
+        private bool _isFocused;
 
         public ControlBase()
         {
@@ -31,7 +32,15 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 
         public bool CanFocus { get; set; }
 
-        public virtual bool IsFocused { get; internal set; }
+        public virtual bool IsFocused
+        {
+            get { return _isFocused; }
+            internal set
+            {
+                _isFocused = value;
+                OnFocusChanged(value);
+            }
+        }
 
         public int TabIndex { get; set; }
 
@@ -78,6 +87,8 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 
         public event EventHandler TextChanged;
 
+        public event EventHandler<bool> FocusChanged;
+
         public void Show()
         {
             IsVisible = true;
@@ -101,6 +112,11 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
             {
                 throw new ControlCantBeFocusedException("Control cannot be focused", this);
             }
+        }
+
+        public virtual void OnFocusChanged(bool isFocused)
+        {
+            FocusChanged?.Invoke(this, isFocused);
         }
 
         protected virtual void OnTextChanged(EventArgs e)

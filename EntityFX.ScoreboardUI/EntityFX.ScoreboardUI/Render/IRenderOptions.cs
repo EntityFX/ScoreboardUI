@@ -5,5 +5,7 @@
         int WindowHeight { get; set; }
 
         int WindowWidth { get; set; }
+
+        ColorScheme ColorScheme { get; set; }
     }
 }

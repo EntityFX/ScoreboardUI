@@ -24,6 +24,8 @@ namespace EntityFX.ScoreboardUI
 
         void NextFocus();
 
+        void PreviousFocus();
+
         void ResetFocus();
     }
 }

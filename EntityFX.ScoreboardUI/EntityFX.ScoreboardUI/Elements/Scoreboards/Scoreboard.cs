@@ -15,12 +15,12 @@ namespace EntityFX.ScoreboardUI.Elements.Scoreboards
             Title = GetType().Name;
             TitleAligment = TitleAligment.Center;
             IsBorderVisible = true;
-            BorderBackgroundColor = ConsoleColor.Blue;
-            BorderForegroundColor = ConsoleColor.Gray;
+            BorderBackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.PrimaryBackgroundColor;
+            BorderForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.BorderColor;
             Size = new Size
             {
-                Height = Console.WindowHeight,
-                Width = Console.WindowWidth
+                Height = ScoreboardContext.RenderEngine.RenderOptions.WindowHeight,
+                Width = ScoreboardContext.RenderEngine.RenderOptions.WindowWidth
             };
         }
 

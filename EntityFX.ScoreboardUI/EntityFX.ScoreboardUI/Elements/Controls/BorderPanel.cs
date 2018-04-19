@@ -7,8 +7,8 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 
         public BorderPanel()
         {
-            BorderBackgroundColor = ConsoleColor.Blue;
-            BorderForegroundColor = ConsoleColor.Gray;
+            BorderBackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.PrimaryBackgroundColor;
+            BorderForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.BorderColor;
             DisplayText = true;
         }
         public bool IsBorderVisible { get; set; }

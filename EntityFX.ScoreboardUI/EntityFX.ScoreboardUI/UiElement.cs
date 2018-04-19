@@ -12,8 +12,8 @@ namespace EntityFX.ScoreboardUI
         {
             IsVisible = true;
             IsEnabled = true;
-            BackgroundColor = ConsoleColor.Blue;
-            ForegroundColor = ConsoleColor.Yellow;
+            BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.PrimaryBackgroundColor;
+            ForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.PrimaryForegroundColor;
         }
 
         public Guid Uid { get; set; }

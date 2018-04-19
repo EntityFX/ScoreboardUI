@@ -8,7 +8,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
         public Button()
         {
             TextAligment = TitleAligment.Center;
-            BackgroundColor = ConsoleColor.DarkGreen;
+            BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.ButtonsBackgroundColor;
         }
 
         public TitleAligment TextAligment { get; set; }

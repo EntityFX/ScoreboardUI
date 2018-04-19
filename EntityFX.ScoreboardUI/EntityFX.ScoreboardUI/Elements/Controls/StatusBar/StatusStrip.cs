@@ -11,8 +11,8 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.StatusBar
 
         public StatusStrip()
         {
-            BackgroundColor = ConsoleColor.DarkGray;
-            ForegroundColor = ConsoleColor.Black;
+            BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MenuBackgroundColor;
+            ForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MenuForegroundColor;
         }
 
         public override void AddChild(StatusStripItem childControl)

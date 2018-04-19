@@ -6,10 +6,11 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.StatusBar
     {
         public StatusStripLabel()
         {
-            BackgroundColor = ConsoleColor.DarkGray;
+            BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MenuBackgroundColor;
             InternalControl = new Label()
             {
-                Parent = this
+                Parent = this,
+                ForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MenuForegroundColor
             };
         }
     }

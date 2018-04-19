@@ -10,5 +10,6 @@
 
         public int WindowHeight { get; set; }
         public int WindowWidth { get; set; }
+        public ColorScheme ColorScheme { get; set; }
     }
 }

@@ -6,8 +6,8 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
     {
         public TextBox()
         {
-            BackgroundColor = ConsoleColor.White;
-            ForegroundColor = ConsoleColor.Blue;
+            BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.BoxesBackgroundColor;
+            ForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.BoxesForegroundColor; ;
             InputLength = 15;
             MaxTextSize = 30;
         }

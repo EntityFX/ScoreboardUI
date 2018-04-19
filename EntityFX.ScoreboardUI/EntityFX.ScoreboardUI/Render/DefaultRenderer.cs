@@ -14,16 +14,19 @@ namespace EntityFX.ScoreboardUI.Render
 {
     internal class DefaultRenderer : IRenderer
     {
-        public DefaultRenderer()
+        public IConsoleAdapter ConsoleAdapter { get;  }
+
+        public DefaultRenderer(IConsoleAdapter consoleAdapter, IRenderOptions renderOptions)
         {
-            RenderOptions = new DefaultRenderOptions();
+            ConsoleAdapter = consoleAdapter;
+            RenderOptions = renderOptions;
         }
 
         public void Initialize()
         {
-            Console.WindowHeight = RenderOptions.WindowHeight;
-            Console.WindowWidth = RenderOptions.WindowWidth;
-            Console.CursorVisible = false;
+            //_consoleAdapter.WindowHeight = RenderOptions.WindowHeight;
+            //_consoleAdapter.WindowWidth = RenderOptions.WindowWidth;
+            ConsoleAdapter.CursorVisible = false;
         }
 
         public void Render(UiElement uiElement)
@@ -135,17 +138,17 @@ namespace EntityFX.ScoreboardUI.Render
 
         private void RenderControl(ControlBase control)
         {
-            ConsoleColor previousForeground = Console.ForegroundColor;
-            ConsoleColor previousBackground = Console.BackgroundColor;
+            ConsoleColor previousForeground = ConsoleAdapter.ForegroundColor;
+            ConsoleColor previousBackground = ConsoleAdapter.BackgroundColor;
             if (control.IsEnabled)
             {
-                Console.BackgroundColor = control.IsFocused ? ConsoleColor.DarkYellow : control.BackgroundColor;
-                Console.ForegroundColor = control.ForegroundColor;
+                ConsoleAdapter.BackgroundColor = control.IsFocused ? RenderOptions.ColorScheme.FocusedBackgroundColor : control.BackgroundColor;
+                ConsoleAdapter.ForegroundColor = control.IsFocused ? RenderOptions.ColorScheme.FocusedForegroundColor : control.ForegroundColor;
             }
             else
             {
-                Console.BackgroundColor = ConsoleColor.Gray;
-                Console.ForegroundColor = ConsoleColor.DarkGray;
+                ConsoleAdapter.BackgroundColor = RenderOptions.ColorScheme.DisabledBackgroundColor;
+                ConsoleAdapter.ForegroundColor = RenderOptions.ColorScheme.DisabledForegroundColor;
             }
 
             var borderable = control as IBorderable;
@@ -164,7 +167,7 @@ namespace EntityFX.ScoreboardUI.Render
             }
 
             Point loc = control.AbsoluteLocation();
-            Console.SetCursorPosition(loc.Left, loc.Top);
+            ConsoleAdapter.MoveCursor(loc.Left, loc.Top);
             var checkbox = control as Checkbox;
             if (checkbox != null)
             {
@@ -243,8 +246,8 @@ namespace EntityFX.ScoreboardUI.Render
                 RenderListView(listView);
             }
 
-            Console.ForegroundColor = previousForeground;
-            Console.BackgroundColor = previousBackground;
+            ConsoleAdapter.ForegroundColor = previousForeground;
+            ConsoleAdapter.BackgroundColor = previousBackground;
         }
 
         private void RenderListView(ListView listView)
@@ -305,16 +308,16 @@ namespace EntityFX.ScoreboardUI.Render
 
         private void RenderComboBox(ComboBox comboBox)
         {
-            Console.Write(new string(' ', comboBox.Width));
-            Console.SetCursorPosition(comboBox.Location.Left, comboBox.Location.Top);
-            Console.Write(comboBox.VisibleText);
-            Console.SetCursorPosition(comboBox.Location.Left + comboBox.Width - 1, comboBox.Location.Top);
-            ConsoleColor saveColor = Console.BackgroundColor;
-            Console.BackgroundColor = comboBox.ExpanderBackground;
+            ConsoleAdapter.Write(new string(' ', comboBox.Width));
+            ConsoleAdapter.MoveCursor(comboBox.Location.Left, comboBox.Location.Top);
+            ConsoleAdapter.Write(comboBox.VisibleText);
+            ConsoleAdapter.MoveCursor(comboBox.Location.Left + comboBox.Width - 1, comboBox.Location.Top);
+            ConsoleColor saveColor = ConsoleAdapter.BackgroundColor;
+            ConsoleAdapter.BackgroundColor = comboBox.ExpanderBackground;
 
             var expanded = comboBox.DroppedDown;
-            Console.Write(expanded ? '▲' : '▼');
-            Console.BackgroundColor = saveColor;
+            ConsoleAdapter.Write(expanded ? '▲' : '▼');
+            ConsoleAdapter.BackgroundColor = saveColor;
             var initialCurosrTopPosition = comboBox.Location.Top + 1;
             var itemLinesToDraw = comboBox.Items.Count > comboBox.VisibleItemsCount
                                                         ? comboBox.VisibleItemsCount
@@ -330,28 +333,28 @@ namespace EntityFX.ScoreboardUI.Render
 
             if (expanded)
             {
-                Console.SetCursorPosition(comboBox.Location.Left + comboBox.Width - 1, comboBox.Location.Top);
+                ConsoleAdapter.MoveCursor(comboBox.Location.Left + comboBox.Width - 1, comboBox.Location.Top);
 
                 RenderBackgroundBox(
                     expanderLocation,
                     expanderSize,
                     comboBox.BackgroundColor
                 );
-                Console.ForegroundColor = comboBox.ForegroundColor;
-                Console.BackgroundColor = comboBox.BackgroundColor;
+                ConsoleAdapter.ForegroundColor = comboBox.ForegroundColor;
+                ConsoleAdapter.BackgroundColor = comboBox.BackgroundColor;
 
                 var startItem = comboBox.SelectedIndex >= comboBox.VisibleItemsCount ? comboBox.SelectedIndex - comboBox.VisibleItemsCount + 1 : 0;
                 for (int i = startItem; i < startItem + itemLinesToDraw; i++)
                 {
-                    Console.SetCursorPosition(comboBox.Location.Left + 1, initialCurosrTopPosition);
+                    ConsoleAdapter.MoveCursor(comboBox.Location.Left + 1, initialCurosrTopPosition);
                     if (comboBox.Items[i] == comboBox.Items[comboBox.SelectedIndex])
                     {
-                        Console.BackgroundColor = ConsoleColor.DarkBlue;
-                        Console.ForegroundColor = comboBox.SelectedColor;
+                        ConsoleAdapter.BackgroundColor = RenderOptions.ColorScheme.FocusedBackgroundColor;
+                        ConsoleAdapter.ForegroundColor = comboBox.SelectedColor;
                     }
-                    Console.Write(comboBox.Items[i].Text);
-                    Console.BackgroundColor = comboBox.BackgroundColor;
-                    Console.ForegroundColor = comboBox.ForegroundColor;
+                    ConsoleAdapter.Write(comboBox.Items[i].Text);
+                    ConsoleAdapter.BackgroundColor = comboBox.BackgroundColor;
+                    ConsoleAdapter.ForegroundColor = comboBox.ForegroundColor;
                     ++initialCurosrTopPosition;
                 }
 
@@ -393,11 +396,11 @@ namespace EntityFX.ScoreboardUI.Render
         private void RenderVerticalScroll(Point point, int height, int rollerSize = 1, int rollerOffset = 0)
         {
             RenderHorizontalLine(new Point() { Left = point.Left, Top = point.Top + 1 }, height - 2, '░');
-            Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.SetCursorPosition(point.Left, point.Top);
-            Console.Write('▲');
-            Console.SetCursorPosition(point.Left, point.Top + height - 1);
-            Console.Write('▼');
+            ConsoleAdapter.BackgroundColor = ConsoleColor.DarkGray;
+            ConsoleAdapter.MoveCursor(point.Left, point.Top);
+            ConsoleAdapter.Write('▲');
+            ConsoleAdapter.MoveCursor(point.Left, point.Top + height - 1);
+            ConsoleAdapter.Write('▼');
 
             RenderHorizontalLine(new Point() { Left = point.Left, Top = point.Top + 1 + rollerOffset }, rollerSize, '█');
         }
@@ -407,8 +410,8 @@ namespace EntityFX.ScoreboardUI.Render
             if (panel.DisplayText)
             {
                 var loc = panel.AbsoluteLocation();
-                Console.SetCursorPosition(loc.Left + 1, loc.Top);
-                Console.Write(panel.VisibleText);
+                ConsoleAdapter.MoveCursor(loc.Left + 1, loc.Top);
+                ConsoleAdapter.Write(panel.VisibleText);
             }
         }
 
@@ -419,8 +422,8 @@ namespace EntityFX.ScoreboardUI.Render
             {
                 for (int x = 0; x < image.Size.Width; x++)
                 {
-                    Console.SetCursorPosition(x + loc.Left, y + loc.Top);
-                    Console.Write(image.ImageArray[y, x]);
+                    ConsoleAdapter.MoveCursor(x + loc.Left, y + loc.Top);
+                    ConsoleAdapter.Write(image.ImageArray[y, x]);
                 }
             }
         }
@@ -428,36 +431,36 @@ namespace EntityFX.ScoreboardUI.Render
         private void RenderLabel(Label label)
         {
             Point loc = label.AbsoluteLocation();
-            Console.SetCursorPosition(loc.Left, loc.Top);
-            Console.Write(label.Text);
+            ConsoleAdapter.MoveCursor(loc.Left, loc.Top);
+            ConsoleAdapter.Write(label.Text);
         }
 
         private void RenderCheckBox(Checkbox checkbox)
         {
             char marker = checkbox.IsChecked != null ? (bool)checkbox.IsChecked ? '■' : ' ' : '?';
             string label = checkbox.DisplayText ? " " + checkbox.Text : string.Empty;
-            Console.Write("[{0}]{1}", marker, label);
+            ConsoleAdapter.Write(string.Format("[{0}]{1}", marker, label));
         }
 
         private void RenderTextBox(TextBox textBox)
         {
-            Console.Write(new string(' ', textBox.InputLength));
-            Console.SetCursorPosition(textBox.Location.Left, textBox.Location.Top);
-            Console.Write(textBox.VisibleText);
+            ConsoleAdapter.Write(new string(' ', textBox.InputLength));
+            ConsoleAdapter.MoveCursor(textBox.Location.Left, textBox.Location.Top);
+            ConsoleAdapter.Write(textBox.VisibleText);
         }
 
 
         private void RenderPasswordBox(PasswordBox textBox)
         {
-            Console.Write(new string(' ', textBox.InputLength));
-            Console.SetCursorPosition(textBox.Location.Left, textBox.Location.Top);
+            ConsoleAdapter.Write(new string(' ', textBox.InputLength));
+            ConsoleAdapter.MoveCursor(textBox.Location.Left, textBox.Location.Top);
             if (textBox.IsFocused && textBox.VisibleText.Length > 0)
             {
-                Console.Write(new String('*', textBox.VisibleText.Length - 1) + textBox.VisibleText[textBox.VisibleText.Length - 1]);
+                ConsoleAdapter.Write(new String('*', textBox.VisibleText.Length - 1) + textBox.VisibleText[textBox.VisibleText.Length - 1]);
             }
             else
             {
-                Console.Write(new String('*', textBox.VisibleText.Length));
+                ConsoleAdapter.Write(new String('*', textBox.VisibleText.Length));
             }
         }
 
@@ -467,8 +470,8 @@ namespace EntityFX.ScoreboardUI.Render
 
             var str = new string(' ', lineLength);
             Point loc = button.AbsoluteLocation();
-            Console.SetCursorPosition(loc.Left, loc.Top);
-            Console.Write(str);
+            ConsoleAdapter.MoveCursor(loc.Left, loc.Top);
+            ConsoleAdapter.Write(str);
 
             if (button.DisplayText)
             {
@@ -478,7 +481,7 @@ namespace EntityFX.ScoreboardUI.Render
                 {
                     case TitleAligment.Left:
                         left = button.Location.Left;
-                        Console.SetCursorPosition(loc.Left, loc.Top);
+                        ConsoleAdapter.MoveCursor(loc.Left, loc.Top);
                         break;
                     case TitleAligment.Center:
                         left = (button.Width / 2) - (titleLength / 2) + loc.Left;
@@ -489,8 +492,8 @@ namespace EntityFX.ScoreboardUI.Render
                     default:
                         throw new ArgumentOutOfRangeException("aligment");
                 }
-                Console.SetCursorPosition(left, loc.Top);
-                Console.Write(button.VisibleText);
+                ConsoleAdapter.MoveCursor(left, loc.Top);
+                ConsoleAdapter.Write(button.VisibleText);
             }
         }
 
@@ -498,24 +501,24 @@ namespace EntityFX.ScoreboardUI.Render
         {
             char marker = radioButton.IsChecked != null ? (bool)radioButton.IsChecked ? '∙' : ' ' : '?';
             string label = radioButton.DisplayText ? " " + radioButton.Text : string.Empty;
-            Console.Write("({0}){1}", marker, label);
+            ConsoleAdapter.Write(string.Format("({0}){1}", marker, label));
         }
 
         private void RenderProgressBar(ProgressBar progressBar)
         {
             var location = progressBar.AbsoluteLocation();
-            Console.SetCursorPosition(location.Left, location.Top);
-            Console.Write(new string(' ', progressBar.Width));
+            ConsoleAdapter.MoveCursor(location.Left, location.Top);
+            ConsoleAdapter.Write(new string(' ', progressBar.Width));
 
             int normalMax = progressBar.Maximum - progressBar.Minimum;
             int normalValue = progressBar.Value - progressBar.Minimum;
             var size = (int)((normalValue / (normalMax * 1.0)) * progressBar.Width);
 
-            Console.SetCursorPosition(location.Left, location.Top);
-            ConsoleColor saveColor = Console.BackgroundColor;
-            Console.BackgroundColor = progressBar.StripeColor;
-            Console.Write(new string(' ', size));
-            Console.BackgroundColor = saveColor;
+            ConsoleAdapter.MoveCursor(location.Left, location.Top);
+            ConsoleColor saveColor = ConsoleAdapter.BackgroundColor;
+            ConsoleAdapter.BackgroundColor = progressBar.StripeColor;
+            ConsoleAdapter.Write(new string(' ', size));
+            ConsoleAdapter.BackgroundColor = saveColor;
 
             if (progressBar.DisplayText)
             {
@@ -525,7 +528,7 @@ namespace EntityFX.ScoreboardUI.Render
                 {
                     case TitleAligment.Left:
                         left = location.Left;
-                        Console.SetCursorPosition(location.Left, location.Top);
+                        ConsoleAdapter.MoveCursor(location.Left, location.Top);
                         break;
                     case TitleAligment.Center:
                         left = (progressBar.Width / 2) - (titleLength / 2) + location.Left;
@@ -536,35 +539,35 @@ namespace EntityFX.ScoreboardUI.Render
                     default:
                         throw new ArgumentOutOfRangeException("aligment");
                 }
-                Console.SetCursorPosition(left, location.Top);
-                Console.Write(progressBar.VisibleText);
+                ConsoleAdapter.MoveCursor(left, location.Top);
+                ConsoleAdapter.Write(progressBar.VisibleText);
             }
         }
 
         private void RenderBackgroundBox(Point point, Size size, ConsoleColor backgroundColor)
         {
-            ConsoleColor previousBackground = Console.BackgroundColor;
-            Console.BackgroundColor = backgroundColor;
+            ConsoleColor previousBackground = ConsoleAdapter.BackgroundColor;
+            ConsoleAdapter.BackgroundColor = backgroundColor;
             int lineLength = size.Width;
 
             var str = new string(' ', lineLength);
 
             for (int y = point.Top; y < point.Top + size.Height; y++)
             {
-                Console.SetCursorPosition(point.Left, y);
-                Console.Write(str);
+                ConsoleAdapter.MoveCursor(point.Left, y);
+                ConsoleAdapter.Write(str);
             }
-            Console.SetCursorPosition(point.Left, point.Top);
-            Console.BackgroundColor = previousBackground;
+            ConsoleAdapter.MoveCursor(point.Left, point.Top);
+            ConsoleAdapter.BackgroundColor = previousBackground;
         }
 
         private void RenderBorder(IBorderable control, Point location, Size size, BorderCharType borderCharType)
         {
-            ConsoleColor previousBackground = Console.BackgroundColor;
-            Console.BackgroundColor = control.BorderBackgroundColor;
+            ConsoleColor previousBackground = ConsoleAdapter.BackgroundColor;
+            ConsoleAdapter.BackgroundColor = control.BorderBackgroundColor;
 
-            ConsoleColor previousForeground = Console.ForegroundColor;
-            Console.ForegroundColor = control.BorderForegroundColor;
+            ConsoleColor previousForeground = ConsoleAdapter.ForegroundColor;
+            ConsoleAdapter.ForegroundColor = control.BorderForegroundColor;
             RenderVerticalLine(
                 new Point
             {
@@ -594,52 +597,52 @@ namespace EntityFX.ScoreboardUI.Render
             },
                 size.Height - 2, borderCharType.VerticalChar);
 
-            Console.SetCursorPosition(location.Left + size.Width - 1, location.Top + size.Height - 1);
-            if (!(Console.BufferWidth == location.Left + size.Width && Console.BufferHeight == location.Top + size.Height))
+            ConsoleAdapter.MoveCursor(location.Left + size.Width - 1, location.Top + size.Height - 1);
+            if (!(RenderOptions.WindowHeight == location.Left + size.Width && RenderOptions.WindowHeight == location.Top + size.Height))
             {
-                Console.Write(borderCharType.BottomRightChar);
+                ConsoleAdapter.Write(borderCharType.BottomRightChar);
             }
             else
             {
-                Console.SetCursorPosition(location.Left, location.Top);
-                Console.Write(borderCharType.BottomRightChar);
-                Console.MoveBufferArea(location.Left, location.Top, 1, 1, location.Left + size.Width - 1, location.Top + size.Height - 1);
+                ConsoleAdapter.MoveCursor(location.Left, location.Top);
+                ConsoleAdapter.Write(borderCharType.BottomRightChar);
+                ConsoleAdapter.MoveArea(location.Left, location.Top, 1, 1, location.Left + size.Width - 1, location.Top + size.Height - 1);
             }
 
-            Console.SetCursorPosition(location.Left, location.Top);
-            Console.Write(borderCharType.TopLeftChar);
+            ConsoleAdapter.MoveCursor(location.Left, location.Top);
+            ConsoleAdapter.Write(borderCharType.TopLeftChar);
 
-            Console.SetCursorPosition(location.Left, location.Top + size.Height - 1);
-            Console.Write(borderCharType.BottomLeftChar);
+            ConsoleAdapter.MoveCursor(location.Left, location.Top + size.Height - 1);
+            ConsoleAdapter.Write(borderCharType.BottomLeftChar);
 
-            Console.SetCursorPosition(location.Left + size.Width - 1, location.Top);
-            Console.Write(borderCharType.TopRightChar);
-            Console.BackgroundColor = previousBackground;
-            Console.ForegroundColor = previousForeground;
+            ConsoleAdapter.MoveCursor(location.Left + size.Width - 1, location.Top);
+            ConsoleAdapter.Write(borderCharType.TopRightChar);
+            ConsoleAdapter.BackgroundColor = previousBackground;
+            ConsoleAdapter.ForegroundColor = previousForeground;
         }
 
         private void RenderVerticalLine(Point location, int width, char character = '-')
         {
             var str = new string(character, width);
-            Console.SetCursorPosition(location.Left, location.Top);
-            Console.Write(str);
+            ConsoleAdapter.MoveCursor(location.Left, location.Top);
+            ConsoleAdapter.Write(str);
         }
 
         private void RenderHorizontalLine(Point location, int height, char character = '-')
         {
             for (int i = 0; i < height; i++)
             {
-                Console.SetCursorPosition(location.Left, location.Top + i);
-                Console.Write(character);
+                ConsoleAdapter.MoveCursor(location.Left, location.Top + i);
+                ConsoleAdapter.Write(character);
             }
         }
 
         private void RenderTitle(Scoreboard scoreboard)
         {
-            ConsoleColor previousForeground = Console.ForegroundColor;
-            ConsoleColor previousBackground = Console.BackgroundColor;
-            Console.BackgroundColor = scoreboard.BackgroundColor;
-            Console.ForegroundColor = scoreboard.ForegroundColor;
+            ConsoleColor previousForeground = ConsoleAdapter.ForegroundColor;
+            ConsoleColor previousBackground = ConsoleAdapter.BackgroundColor;
+            ConsoleAdapter.BackgroundColor = scoreboard.BackgroundColor;
+            ConsoleAdapter.ForegroundColor = scoreboard.ForegroundColor;
 
             int titleLength = scoreboard.Title.Length;
             int left = 0;
@@ -647,7 +650,7 @@ namespace EntityFX.ScoreboardUI.Render
             {
                 case TitleAligment.Left:
                     left = scoreboard.Location.Left;
-                    Console.SetCursorPosition(scoreboard.Location.Left, scoreboard.Location.Top);
+                    ConsoleAdapter.MoveCursor(scoreboard.Location.Left, scoreboard.Location.Top);
                     break;
                 case TitleAligment.Center:
                     left = (scoreboard.Size.Width / 2) - (titleLength / 2) + scoreboard.Location.Left;
@@ -658,10 +661,10 @@ namespace EntityFX.ScoreboardUI.Render
                 default:
                     throw new ArgumentOutOfRangeException("aligment");
             }
-            Console.SetCursorPosition(left, scoreboard.Location.Top);
-            Console.Write(scoreboard.Title);
-            Console.ForegroundColor = previousForeground;
-            Console.BackgroundColor = previousBackground;
+            ConsoleAdapter.MoveCursor(left, scoreboard.Location.Top);
+            ConsoleAdapter.Write(scoreboard.Title);
+            ConsoleAdapter.ForegroundColor = previousForeground;
+            ConsoleAdapter.BackgroundColor = previousBackground;
         }
     }
 }

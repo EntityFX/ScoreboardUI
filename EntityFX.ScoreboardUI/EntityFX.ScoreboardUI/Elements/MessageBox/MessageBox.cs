@@ -108,7 +108,7 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
                 };
             }
             ScoreboardContext.Navigation.Navigate(mb);
-            Console.Beep();
+            ScoreboardContext.RenderEngine.ConsoleAdapter.Beep();
         }
 
         public static void Alert(string message, Action<MessageBoxResultEnum> resultAction, string title)

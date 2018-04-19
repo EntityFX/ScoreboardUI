@@ -7,10 +7,10 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
         public ComboBox()
         {
             Width = 15;
-            BackgroundColor = ConsoleColor.White;
-            ForegroundColor = ConsoleColor.Blue;
+            BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.BoxesBackgroundColor;
+            ForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.BoxesForegroundColor;
             ExpanderBackground = ConsoleColor.Gray;
-            SelectedColor = ConsoleColor.Yellow;
+            SelectedColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.FocusedForegroundColor;
             VisibleItemsCount = 5;
         }
 

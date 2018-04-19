@@ -31,6 +31,8 @@ namespace EntityFx.ScorbordUI.TestExample
 
         private TextBox _textBox1;
 
+        private DateTimeBox _dateTimeBox1;
+
         private Button _button1;
 
         private Button _button2;
@@ -58,6 +60,8 @@ namespace EntityFx.ScorbordUI.TestExample
         private ComboBox _comboBox1;
 
         private Table _table1;
+
+        private Image _image;
 
         public MainScoreboard()
             : base(new Panel())
@@ -94,6 +98,9 @@ namespace EntityFx.ScorbordUI.TestExample
             _textBox1 = new TextBox { Location = new Point { Left = 3, Top = 20 } };
             _textBox1.TextChanged += textBox1_TextChanged;
             RootPanel.AddChild(_textBox1);
+
+            _dateTimeBox1 = new DateTimeBox() {Location = new Point {Left = 20, Top = 20}};
+            RootPanel.AddChild(_dateTimeBox1);
 
             _button1 = new Button { Location = new Point { Left = 3, Top = 22 }, Width = 10 };
             _button1.Pressed += button1_Pressed;
@@ -181,6 +188,17 @@ namespace EntityFx.ScorbordUI.TestExample
             RootPanel.AddChild(new Checkbox { Location = new Point { Left = 29, Top = 14 }, Text = "Checkbox for overlapp" });
 
             RootPanel.AddChild(new BorderPanel { Location = new Point { Left = 29, Top = 16 }, Size = new Size {Width = 15, Height = 3} });
+
+            _image = Image.FromString(
+@" .:::.   .:::.
+:::::::.:::::::
+:::::::::::::::
+':::::::::::::'
+  ':::::::::'
+    ':::::'
+      ':'");
+            _image.Location = new Point() {Left = 60, Top = 4};
+            RootPanel.AddChild(_image);
 
             StatusStrip = new StatusStrip();
             StatusStrip.AddChild(new StatusStripLabel

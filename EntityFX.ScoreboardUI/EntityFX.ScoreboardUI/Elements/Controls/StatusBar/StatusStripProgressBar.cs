@@ -14,8 +14,8 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.StatusBar
                 Parent = this
             };
             _progressBar = (ProgressBar)InternalControl;
-            BackgroundColor = ConsoleColor.DarkGray;
-            StripeColor = ConsoleColor.DarkMagenta;
+            BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.SecondaryBackgroundColor;
+            StripeColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.SecondaryForegroundColor;
         }
 
         public int Minimum

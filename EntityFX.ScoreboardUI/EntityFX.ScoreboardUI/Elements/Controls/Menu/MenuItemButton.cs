@@ -24,7 +24,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.Menu
 
         public MenuItemButton()
         {
-            BackgroundColor = ConsoleColor.DarkBlue;
+            BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.ButtonsBackgroundColor;
             Location = new Point() {Top = 0};
             InternalControl = new Button
             {

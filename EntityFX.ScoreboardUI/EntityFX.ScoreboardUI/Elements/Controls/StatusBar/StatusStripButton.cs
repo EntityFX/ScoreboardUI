@@ -6,7 +6,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.StatusBar
     {
         public StatusStripButton()
         {
-            BackgroundColor = ConsoleColor.DarkGreen;
+            BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.ButtonsBackgroundColor;
             InternalControl = new Button
             {
                 Text = Text,
