@@ -25,12 +25,13 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.Menu
         public MenuItemButton()
         {
             BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.ButtonsBackgroundColor;
-            Location = new Point() {Top = 0};
+            ForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.ButtonsForegroundColor;
+            Location = new Point() { Top = 0 };
             InternalControl = new Button
             {
                 Text = Text,
                 Parent = this,
-                Location = new Point() { Top = 0},
+                Location = new Point() { Top = 0 },
                 Position = PositionEnum.RELATIVE
             };
         }

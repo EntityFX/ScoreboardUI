@@ -64,13 +64,12 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.Menu
         {
             if (sender.SubMenuItems != null && sender.SubMenuItems.Any())
             {
-                MessageBox.MessageBox.Show("Select option", (e1, data) =>
+                MessageBox.MessageBox.Show("Select option",
+                    sender.SubMenuItems.Select(i => new SubmenuContext<object>(){ Data = i.Data, Text = i.Text}), (e1, data) =>
                     {
                         Pressed?.Invoke(sender, data);
                     }, sender.Text, MessageBoxTypeEnum.None,
-                    MessageBoxButtonsEnum.Ok,
-                    MessageBoxButtonsDirectionEnum.Vertical,
-                    sender.SubMenuItems.Select(i => new SubmenuContext<object>(){ Data = i.Data, Text = i.Text}));
+                    MessageBoxButtonsDirectionEnum.Vertical);
             }
             else
             {

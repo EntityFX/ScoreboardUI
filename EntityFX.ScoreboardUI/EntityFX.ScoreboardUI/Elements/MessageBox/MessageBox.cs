@@ -24,7 +24,7 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
         private Action<MessageBoxResultEnum, object> _result;
 
         public MessageBox(string message, Action<MessageBoxResultEnum, object> result, string title, MessageBoxTypeEnum type,
-            MessageBoxButtonsEnum buttons, 
+            MessageBoxButtonsEnum buttons,
             MessageBoxButtonsDirectionEnum direction = MessageBoxButtonsDirectionEnum.Horizontal)
             : base(new Panel())
         {
@@ -60,55 +60,67 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
             Show(message, resultAction, title, type, MessageBoxButtonsEnum.Ok);
         }
 
-        public static void Show(string message, Action<MessageBoxResultEnum, object> resultAction = null,
-            string title = "Message", MessageBoxTypeEnum type = MessageBoxTypeEnum.Info,
-            MessageBoxButtonsEnum buttons = MessageBoxButtonsEnum.Ok, 
-            MessageBoxButtonsDirectionEnum direction = MessageBoxButtonsDirectionEnum.Horizontal, IEnumerable<SubmenuContext<object>> buttonsList = null)
+        public static void Show(string message,
+    IEnumerable<SubmenuContext<object>> buttonsList, Action<MessageBoxResultEnum, object> resultAction = null,
+    string title = "Message", MessageBoxTypeEnum type = MessageBoxTypeEnum.Info,
+    MessageBoxButtonsDirectionEnum direction = MessageBoxButtonsDirectionEnum.Horizontal)
         {
             int width = 0;
             ScoreboardContext.CurrentState.IsNavigating = true;
             MessageBox mb;
-            if (buttonsList != null)
+            int minWidth = 16;
+            var largestTextLength = buttonsList.Select(i => i.Text.Length).Max();
+            width = largestTextLength > minWidth ? largestTextLength + 6 : minWidth;
+            mb = new MessageBox(message, resultAction, title, type, direction, buttonsList)
             {
-                int minWidth = 16;
-                var largestTextLength = buttonsList.Select(i => i.Text.Length).Max();
-                width = largestTextLength > minWidth ? largestTextLength + 6 : minWidth;
-                mb = new MessageBox(message, resultAction, title, type, direction, buttonsList)
+                BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MessageBoxBackgroundColor,
+                ForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MessageBoxForegroundColor,
+                BorderForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.BorderColor,
+                Size = new Size
                 {
-                    BackgroundColor = ConsoleColor.DarkRed,
-                    Size = new Size
-                    {
-                        Height = direction == MessageBoxButtonsDirectionEnum.Horizontal ? 10 : buttonsList.Count() * 3 + 3,
-                        Width = width
-                    },
-                    Location = new Point
-                    {
-                        Left = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2 - width / 2,
-                        Top = ScoreboardContext.Navigation.Current.Scoreboard.Size.Height / 2 - 4
-                    }
-                };
-            }
-            else
-            {
-                int minWidth = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2;
-                width = message.Length > minWidth ? message.Length + 2 : minWidth;
-                mb = new MessageBox(message, resultAction, title, type, buttons, direction)
+                    Height = direction == MessageBoxButtonsDirectionEnum.Horizontal ? 10 : buttonsList.Count() * 3 + 3,
+                    Width = width
+                },
+                Location = new Point
                 {
-                    BackgroundColor = ConsoleColor.DarkRed,
-                    Size = new Size
-                    {
-                        Height = direction == MessageBoxButtonsDirectionEnum.Horizontal ? 10 : buttonsList.Count() * 3,
-                        Width = width
-                    },
-                    Location = new Point
-                    {
-                        Left = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2 - width / 2,
-                        Top = ScoreboardContext.Navigation.Current.Scoreboard.Size.Height / 2 - 4
-                    }
-                };
-            }
+                    Left = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2 - width / 2,
+                    Top = ScoreboardContext.Navigation.Current.Scoreboard.Size.Height / 2 - 4
+                }
+            };
             ScoreboardContext.Navigation.Navigate(mb);
             ScoreboardContext.RenderEngine.ConsoleAdapter.Beep();
+        }
+
+        public static void Show(string message, Action<MessageBoxResultEnum, object> resultAction = null,
+            string title = "Message", MessageBoxTypeEnum type = MessageBoxTypeEnum.Info,
+            MessageBoxButtonsEnum buttons = MessageBoxButtonsEnum.Ok,
+            MessageBoxButtonsDirectionEnum direction = MessageBoxButtonsDirectionEnum.Horizontal)
+        {
+
+            int width = 0;
+            ScoreboardContext.CurrentState.IsNavigating = true;
+            MessageBox mb;
+            int minWidth = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2;
+            width = message.Length > minWidth ? message.Length + 2 : minWidth;
+            mb = new MessageBox(message, resultAction, title, type, buttons, direction)
+            {
+                BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MessageBoxBackgroundColor,
+                ForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MessageBoxForegroundColor,
+                BorderForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.BorderColor,
+                Size = new Size
+                {
+                    Height = direction == MessageBoxButtonsDirectionEnum.Horizontal ? 10 : 20,
+                    Width = width
+                },
+                Location = new Point
+                {
+                    Left = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2 - width / 2,
+                    Top = ScoreboardContext.Navigation.Current.Scoreboard.Size.Height / 2 - 4
+                }
+            };
+            ScoreboardContext.Navigation.Navigate(mb);
+            ScoreboardContext.RenderEngine.ConsoleAdapter.Beep();
+
         }
 
         public static void Alert(string message, Action<MessageBoxResultEnum> resultAction, string title)
@@ -129,15 +141,13 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
         public override void Initialize()
         {
             base.Initialize();
-            BorderBackgroundColor = ConsoleColor.DarkRed;
-            BorderForegroundColor = ConsoleColor.Yellow;
             _labelMessage = new Label
             {
                 Text = _message,
                 Location = new Point
                 {
                     Top = 2,
-                    Left = Size.Width / 2 - _message.Length / 2 
+                    Left = Size.Width / 2 - _message.Length / 2
                 },
                 BackgroundColor = BackgroundColor,
                 ForegroundColor = ConsoleColor.White
@@ -150,7 +160,7 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
         protected override void OnEscapePressed()
         {
             base.OnEscapePressed();
-            PerfomMessageBoxResultAction(MessageBoxResultEnum.None, null);  
+            PerfomMessageBoxResultAction(MessageBoxResultEnum.None, null);
         }
 
         private void InitializeCustomButtons()
@@ -280,7 +290,7 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
         private void button_Pressed(object sender, EventArgs e)
         {
             GoBack();
-            var senderButton = (Button) sender;
+            var senderButton = (Button)sender;
             var enumResult = senderButton.Tag is MessageBoxResultEnum @enum ? @enum : MessageBoxResultEnum.None;
             PerfomMessageBoxResultAction(enumResult, senderButton.Tag);
         }

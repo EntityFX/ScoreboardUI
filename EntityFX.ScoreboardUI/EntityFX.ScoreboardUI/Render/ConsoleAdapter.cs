@@ -28,7 +28,8 @@ namespace EntityFX.ScoreboardUI.Render
         public ConsoleColor BackgroundColor
         {
             get => Console.BackgroundColor;
-            set => Console.BackgroundColor = value;
+            set =>
+					Console.BackgroundColor = value;
         }
         public bool CursorVisible { get; set; }
 

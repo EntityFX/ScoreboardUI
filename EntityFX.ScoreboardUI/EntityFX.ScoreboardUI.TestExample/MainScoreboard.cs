@@ -4,6 +4,7 @@ using System.Timers;
 using EntityFX.ScoreboardUI;
 using EntityFX.ScoreboardUI.Drawing;
 using EntityFX.ScoreboardUI.Elements.Controls;
+using EntityFX.ScoreboardUI.Elements.Controls.Menu;
 using EntityFX.ScoreboardUI.Elements.Controls.StatusBar;
 using EntityFX.ScoreboardUI.Elements.Controls.Table;
 using EntityFX.ScoreboardUI.Elements.MessageBox;
@@ -63,6 +64,8 @@ namespace EntityFx.ScorbordUI.TestExample
 
         private Image _image;
 
+        private Menu _menu;
+
         public MainScoreboard()
             : base(new Panel())
         {
@@ -70,6 +73,17 @@ namespace EntityFx.ScorbordUI.TestExample
 
         public override void Initialize()
         {
+            _menu = new Menu();
+            var menuButton1 = new MenuItemButton<object>()
+            {
+                Text = "Menu 1",
+            };
+            menuButton1.AddChild(new MenuItemButton<object>() {
+                Text = "Submenu 1"
+            });
+            _menu.AddChild(menuButton1);
+            Menu = _menu;
+            
             _checkbox1 = new Checkbox { Location = new Point { Left = 3, Top = 4 }, Text = "Checkbox tentative" };
             _checkbox1.CheckedChanged += checkbox1_CheckedChanged;
             RootPanel.AddChild(_checkbox1);
@@ -99,7 +113,7 @@ namespace EntityFx.ScorbordUI.TestExample
             _textBox1.TextChanged += textBox1_TextChanged;
             RootPanel.AddChild(_textBox1);
 
-            _dateTimeBox1 = new DateTimeBox() {Location = new Point {Left = 20, Top = 20}};
+            _dateTimeBox1 = new DateTimeBox() { Location = new Point { Left = 20, Top = 20 } };
             RootPanel.AddChild(_dateTimeBox1);
 
             _button1 = new Button { Location = new Point { Left = 3, Top = 22 }, Width = 10 };
@@ -165,7 +179,7 @@ namespace EntityFx.ScorbordUI.TestExample
 
             _comboBox1 = new ComboBox
             {
-                Location = new Point {Left = 29, Top = 12},
+                Location = new Point { Left = 29, Top = 12 },
                 VisibleItemsCount = 7
             };
             _comboBox1.Items.AddRange(new[]
@@ -187,7 +201,7 @@ namespace EntityFx.ScorbordUI.TestExample
 
             RootPanel.AddChild(new Checkbox { Location = new Point { Left = 29, Top = 14 }, Text = "Checkbox for overlapp" });
 
-            RootPanel.AddChild(new BorderPanel { Location = new Point { Left = 29, Top = 16 }, Size = new Size {Width = 15, Height = 3} });
+            RootPanel.AddChild(new BorderPanel { Location = new Point { Left = 29, Top = 16 }, Size = new Size { Width = 15, Height = 3 } });
 
             _image = Image.FromString(
 @" .:::.   .:::.
@@ -197,7 +211,7 @@ namespace EntityFx.ScorbordUI.TestExample
   ':::::::::'
     ':::::'
       ':'");
-            _image.Location = new Point() {Left = 60, Top = 4};
+            _image.Location = new Point() { Left = 60, Top = 4 };
             RootPanel.AddChild(_image);
 
             StatusStrip = new StatusStrip();
@@ -246,6 +260,7 @@ namespace EntityFx.ScorbordUI.TestExample
             };
             StatusStrip.AddChild(_statusStripProgressBar);
 
+
             Initializetable();
 
             _timer.Elapsed += timer_Elapsed;
@@ -259,7 +274,7 @@ namespace EntityFx.ScorbordUI.TestExample
         {
             _table1 = new Table();
 
-            _table1.Rows.AddRange(new List<ITableRow<ITableCell<ControlBase>,ControlBase>> {
+            _table1.Rows.AddRange(new List<ITableRow<ITableCell<ControlBase>, ControlBase>> {
                 new TableHeaderRow
                 {
                     Cells = new List<TableHeaderCell>

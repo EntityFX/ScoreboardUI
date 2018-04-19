@@ -48,7 +48,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
             }
             else
             {
-                if (character == '\b' && length > 0)
+                if (e.KeyInfo.Key == ConsoleKey.Backspace && length > 0)
                 {
                     Text = Text.Remove(length - 1, 1);
                 }

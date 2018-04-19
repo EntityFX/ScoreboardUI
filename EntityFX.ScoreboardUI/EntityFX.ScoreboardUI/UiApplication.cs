@@ -59,12 +59,12 @@ namespace EntityFX.ScoreboardUI
                 ScoreboardContext.Navigation.Current.Scoreboard.PressEscape(keyPressArgs);
             }
 
-            if (PressedKey.Key == FocusKey && (PressedKey.Modifiers & ConsoleModifiers.Control) == 0)
+            if (PressedKey.Key == FocusKey && (PressedKey.Modifiers & ConsoleModifiers.Shift) == 0)
             {
                 ScoreboardContext.CurrentState.NextFocus();
             }
 
-            if (PressedKey.Key == FocusKey && (PressedKey.Modifiers & ConsoleModifiers.Control) != 0)
+            if (PressedKey.Key == FocusKey && (PressedKey.Modifiers & ConsoleModifiers.Shift) != 0)
             {
                 ScoreboardContext.CurrentState.PreviousFocus();
             }
