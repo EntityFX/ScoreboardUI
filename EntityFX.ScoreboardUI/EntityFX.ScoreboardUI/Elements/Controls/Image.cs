@@ -50,5 +50,10 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 
             return new Image(imgChar);
         }
+
+        public void Clear()
+        {
+            _imageArray = new char[Size.Height, Size.Width]; 
+        }
     }
 }

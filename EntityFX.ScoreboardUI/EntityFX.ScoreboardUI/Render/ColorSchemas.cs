@@ -24,6 +24,10 @@ namespace EntityFX.ScoreboardUI.Render
                     DisabledForegroundColor = ConsoleColor.Black,
                     MenuBackgroundColor = ConsoleColor.Gray,
                     MenuForegroundColor = ConsoleColor.DarkBlue,
+                    MessageBoxBackgroundColor = ConsoleColor.DarkBlue,
+                    MessageBoxForegroundColor = ConsoleColor.Yellow,
+                    WarningMessageBoxBackgroundColor = ConsoleColor.Yellow,
+                    WarningMessageBoxForegroundColor = ConsoleColor.Black
                 };
             }
         }

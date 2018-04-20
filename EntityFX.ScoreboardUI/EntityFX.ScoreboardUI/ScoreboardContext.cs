@@ -28,7 +28,7 @@ namespace EntityFX.ScoreboardUI
         {
             get
             {
-                var renderer = new DefaultRenderer(new ConsoleAdapter(), new DefaultRenderOptions() { ColorScheme = ColorSchemas.Matrix});
+                var renderer = new DefaultRenderer(new ConsoleAdapter(), new DefaultRenderOptions() { ColorScheme = ColorSchemas.Blue});
                 renderer.Initialize();
                 return renderer;
             }

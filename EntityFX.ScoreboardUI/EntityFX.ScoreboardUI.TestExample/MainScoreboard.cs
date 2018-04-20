@@ -4,6 +4,7 @@ using System.Timers;
 using EntityFX.ScoreboardUI;
 using EntityFX.ScoreboardUI.Drawing;
 using EntityFX.ScoreboardUI.Elements.Controls;
+using EntityFX.ScoreboardUI.Elements.Controls.Charts;
 using EntityFX.ScoreboardUI.Elements.Controls.Menu;
 using EntityFX.ScoreboardUI.Elements.Controls.StatusBar;
 using EntityFX.ScoreboardUI.Elements.Controls.Table;
@@ -66,6 +67,9 @@ namespace EntityFx.ScorbordUI.TestExample
 
         private Menu _menu;
 
+        private NumericBox _numericBox1;
+        private PlotChart _plotChart;
+
         public MainScoreboard()
             : base(new Panel())
         {
@@ -79,42 +83,58 @@ namespace EntityFx.ScorbordUI.TestExample
                 Text = "Menu 1",
             };
             menuButton1.AddChild(new MenuItemButton<object>() {
-                Text = "Submenu 1"
+                Text = "Submenu 1.1"
             });
             _menu.AddChild(menuButton1);
+            var menuButton2 = new MenuItemButton<object>()
+            {
+                Text = "Menu 2",
+            };
+            menuButton2.AddChild(new MenuItemButton<object>()
+            {
+                Text = "Submenu 2.1"
+            });
+            menuButton2.AddChild(new MenuItemButton<object>()
+            {
+                Text = "Submenu 2.2"
+            });
+            _menu.AddChild(menuButton2);
             Menu = _menu;
             
-            _checkbox1 = new Checkbox { Location = new Point { Left = 3, Top = 4 }, Text = "Checkbox tentative" };
+            _checkbox1 = new Checkbox { Location = new Point { Left = 3, Top = 5 }, Text = "Checkbox tentative" };
             _checkbox1.CheckedChanged += checkbox1_CheckedChanged;
             RootPanel.AddChild(_checkbox1);
 
-            _checkbox2 = new Checkbox { Location = new Point { Left = 3, Top = 6 }, IsChecked = true, Text = "Checkbox checked" };
+            _checkbox2 = new Checkbox { Location = new Point { Left = 3, Top = 7 }, IsChecked = true, Text = "Checkbox checked" };
             RootPanel.AddChild(_checkbox2);
 
-            _checkbox3 = new Checkbox { Location = new Point { Left = 3, Top = 8 }, IsChecked = false, Text = "Checkbox unchecked" };
+            _checkbox3 = new Checkbox { Location = new Point { Left = 3, Top = 9 }, IsChecked = false, Text = "Checkbox unchecked" };
             RootPanel.AddChild(_checkbox3);
 
-            _checkbox4 = new Checkbox { Location = new Point { Left = 3, Top = 10 }, IsChecked = false, Text = "Checkbox disabled", IsEnabled = false };
+            _checkbox4 = new Checkbox { Location = new Point { Left = 3, Top = 11 }, IsChecked = false, Text = "Checkbox disabled", IsEnabled = false };
             RootPanel.AddChild(_checkbox4);
 
-            _label1 = new Label { Location = new Point { Left = 3, Top = 12 }, Text = "Label" };
+            _label1 = new Label { Location = new Point { Left = 3, Top = 19 }, Text = "Label" };
             RootPanel.AddChild(_label1);
 
-            _radioButton1 = new RadioButton { Location = new Point { Left = 3, Top = 14 }, Text = "Radio unchecked" };
+            _radioButton1 = new RadioButton { Location = new Point { Left = 3, Top = 13 }, Text = "Radio unchecked" };
             RootPanel.AddChild(_radioButton1);
 
-            _radioButton2 = new RadioButton { Location = new Point { Left = 3, Top = 16 }, Text = "Radio checked", IsChecked = true };
+            _radioButton2 = new RadioButton { Location = new Point { Left = 3, Top = 15 }, Text = "Radio checked", IsChecked = true };
             RootPanel.AddChild(_radioButton2);
 
-            _radioButton3 = new RadioButton { Location = new Point { Left = 3, Top = 18 }, Text = "Radio checked", IsChecked = true, IsEnabled = false };
+            _radioButton3 = new RadioButton { Location = new Point { Left = 3, Top = 17 }, Text = "Radio checked", IsChecked = true, IsEnabled = false };
             RootPanel.AddChild(_radioButton3);
 
-            _textBox1 = new TextBox { Location = new Point { Left = 3, Top = 20 } };
+            _textBox1 = new TextBox { Location = new Point { Left = 29, Top = 16 } };
             _textBox1.TextChanged += textBox1_TextChanged;
             RootPanel.AddChild(_textBox1);
 
-            _dateTimeBox1 = new DateTimeBox() { Location = new Point { Left = 20, Top = 20 } };
+            _dateTimeBox1 = new DateTimeBox() { Location = new Point { Left = 29, Top = 18 } };
             RootPanel.AddChild(_dateTimeBox1);
+
+            _numericBox1 = new NumericBox() { Location = new Point { Left = 29, Top = 20 } };
+            RootPanel.AddChild(_numericBox1);
 
             _button1 = new Button { Location = new Point { Left = 3, Top = 22 }, Width = 10 };
             _button1.Pressed += button1_Pressed;
@@ -124,7 +144,7 @@ namespace EntityFx.ScorbordUI.TestExample
             _button2.Pressed += button2_Pressed;
             RootPanel.AddChild(_button2);
 
-            _progressBar1 = new ProgressBar { Location = new Point { Left = 3, Top = 2 }, Width = 74 };
+            _progressBar1 = new ProgressBar { Location = new Point { Left = 3, Top = 3 }, Width = 74 };
             RootPanel.AddChild(_progressBar1);
 
             _bnext1 = new Button { Location = new Point { Left = 40, Top = 22 }, Width = 10, Text = "Next 1", Tag = 1 };
@@ -141,7 +161,7 @@ namespace EntityFx.ScorbordUI.TestExample
 
             _panel1 = new BorderPanel
             {
-                Location = new Point { Left = 28, Top = 3 },
+                Location = new Point { Left = 28, Top = 4 },
                 Size = new Size { Height = 7, Width = 25 }
             };
             RootPanel.AddChild(_panel1);
@@ -201,8 +221,6 @@ namespace EntityFx.ScorbordUI.TestExample
 
             RootPanel.AddChild(new Checkbox { Location = new Point { Left = 29, Top = 14 }, Text = "Checkbox for overlapp" });
 
-            RootPanel.AddChild(new BorderPanel { Location = new Point { Left = 29, Top = 16 }, Size = new Size { Width = 15, Height = 3 } });
-
             _image = Image.FromString(
 @" .:::.   .:::.
 :::::::.:::::::
@@ -213,6 +231,16 @@ namespace EntityFx.ScorbordUI.TestExample
       ':'");
             _image.Location = new Point() { Left = 60, Top = 4 };
             RootPanel.AddChild(_image);
+
+
+            _plotChart = new PlotChart()
+            {
+                Size = new Size() {Height = 10, Width = 30},
+                Location = new Point() {  Left =  48, Top = 11 },
+                PlotSymbol = ':'
+            };
+            _plotChart.Points = GenerateSinChartPoints(_plotChart.Size, 7);
+            RootPanel.AddChild(_plotChart);
 
             StatusStrip = new StatusStrip();
             StatusStrip.AddChild(new StatusStripLabel
@@ -292,6 +320,8 @@ namespace EntityFx.ScorbordUI.TestExample
             });
         }
 
+        private int _shiftX = 0;
+
         private void _timer2_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (_statusStripProgressBar.Value >= _statusStripProgressBar.Maximum)
@@ -299,6 +329,8 @@ namespace EntityFx.ScorbordUI.TestExample
                 _statusStripProgressBar.Value = _statusStripProgressBar.Minimum;
             }
             _statusStripProgressBar.Increment();
+            _shiftX = _shiftX < _plotChart.Size.Width ? _shiftX + 1 : 0;
+            _plotChart.Points = GenerateSinChartPoints(_plotChart.Size, _shiftX);
         }
 
         private void bNextPressed(object sender, EventArgs e)
@@ -360,6 +392,21 @@ namespace EntityFx.ScorbordUI.TestExample
         protected override void OnKeyPressed(KeyPressEventArgs e)
         {
 
+        }
+
+        private Point[] GenerateSinChartPoints(Size chartSize, int shiftX)
+        {
+            var points = new List<Point>();
+            for (int i = 0; i < chartSize.Width; i++)
+            {
+                int step = chartSize.Width / 4;
+                int shiftY = chartSize.Height / 2;
+                int x, y;
+                x = i + shiftX;
+                y = (int)Math.Floor(Math.Sin(Math.PI / step * x) * shiftY) + shiftY;
+                points.Add(new Point() { Left = i, Top = y });
+            }
+            return points.ToArray();
         }
 
         public void Dispose()

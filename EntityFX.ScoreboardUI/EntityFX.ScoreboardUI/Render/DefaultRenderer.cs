@@ -5,6 +5,7 @@ using System.Linq;
 using EntityFX.ScoreboardUI.Drawing;
 using EntityFX.ScoreboardUI.Elements;
 using EntityFX.ScoreboardUI.Elements.Controls;
+using EntityFX.ScoreboardUI.Elements.Controls.Charts;
 using EntityFX.ScoreboardUI.Elements.Controls.Menu;
 using EntityFX.ScoreboardUI.Elements.Controls.StatusBar;
 using EntityFX.ScoreboardUI.Elements.MessageBox;
@@ -216,6 +217,12 @@ namespace EntityFX.ScoreboardUI.Render
                 RenderImage(image);
             }
 
+            var plotChart = control as PlotChart;
+            if (plotChart != null)
+            {
+                RenderPlotChart(plotChart);
+            }
+
             var panel = control as Panel;
             if (panel != null)
             {
@@ -248,6 +255,17 @@ namespace EntityFX.ScoreboardUI.Render
 
             ConsoleAdapter.ForegroundColor = previousForeground;
             ConsoleAdapter.BackgroundColor = previousBackground;
+        }
+
+        private void RenderPlotChart(PlotChart plotChart)
+        {
+            ConsoleColor previousForeground = ConsoleAdapter.ForegroundColor;
+            ConsoleAdapter.ForegroundColor = plotChart.PointColor;
+            foreach (var listViewItemsControl in plotChart.Controls.OfType<Image>())
+            {
+                RenderImage(listViewItemsControl);
+            }
+            ConsoleAdapter.ForegroundColor = previousForeground;
         }
 
         private void RenderListView(ListView listView)
@@ -418,6 +436,11 @@ namespace EntityFX.ScoreboardUI.Render
         private void RenderImage(Image image)
         {
             Point loc = image.AbsoluteLocation();
+            RenderBackgroundBox(
+                loc,
+                image.Size,
+                image.BackgroundColor
+            );
             for (int y = 0; y < image.Size.Height; ++y)
             {
                 for (int x = 0; x < image.Size.Width; x++)
