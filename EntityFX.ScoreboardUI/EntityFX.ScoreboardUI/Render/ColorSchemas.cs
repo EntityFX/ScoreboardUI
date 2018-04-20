@@ -19,7 +19,7 @@ namespace EntityFX.ScoreboardUI.Render
                     BoxesForegroundColor = ConsoleColor.DarkBlue,
                     ButtonsBackgroundColor = ConsoleColor.DarkCyan,
                     FocusedBackgroundColor = ConsoleColor.DarkYellow,
-                    FocusedForegroundColor = ConsoleColor.White,
+                    FocusedForegroundColor = ConsoleColor.Black,
                     DisabledBackgroundColor = ConsoleColor.Gray,
                     DisabledForegroundColor = ConsoleColor.Black,
                     MenuBackgroundColor = ConsoleColor.Gray,

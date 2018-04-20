@@ -82,7 +82,8 @@ namespace EntityFx.ScorbordUI.TestExample
             {
                 Text = "Menu 1",
             };
-            menuButton1.AddChild(new MenuItemButton<object>() {
+            menuButton1.AddChild(new MenuItemButton<object>()
+            {
                 Text = "Submenu 1.1"
             });
             _menu.AddChild(menuButton1);
@@ -100,7 +101,7 @@ namespace EntityFx.ScorbordUI.TestExample
             });
             _menu.AddChild(menuButton2);
             Menu = _menu;
-            
+
             _checkbox1 = new Checkbox { Location = new Point { Left = 3, Top = 5 }, Text = "Checkbox tentative" };
             _checkbox1.CheckedChanged += checkbox1_CheckedChanged;
             RootPanel.AddChild(_checkbox1);
@@ -222,21 +223,20 @@ namespace EntityFx.ScorbordUI.TestExample
             RootPanel.AddChild(new Checkbox { Location = new Point { Left = 29, Top = 14 }, Text = "Checkbox for overlapp" });
 
             _image = Image.FromString(
-@" .:::.   .:::.
-:::::::.:::::::
-:::::::::::::::
-':::::::::::::'
-  ':::::::::'
-    ':::::'
-      ':'");
-            _image.Location = new Point() { Left = 60, Top = 4 };
+@"───▄▄▄
+─▄▀░▄░▀▄
+─█░█▄▀░█
+─█░▀▄▄▀█▄█▄▀
+▄▄█▄▄▄▄███▀
+");
+            _image.Location = new Point() { Left = 55, Top = 4 };
             RootPanel.AddChild(_image);
 
 
             _plotChart = new PlotChart()
             {
-                Size = new Size() {Height = 10, Width = 30},
-                Location = new Point() {  Left =  48, Top = 11 },
+                Size = new Size() { Height = 10, Width = 30 },
+                Location = new Point() { Left = 48, Top = 11 },
                 PlotSymbol = ':'
             };
             _plotChart.Points = GenerateSinChartPoints(_plotChart.Size, 7);
@@ -329,8 +329,8 @@ namespace EntityFx.ScorbordUI.TestExample
                 _statusStripProgressBar.Value = _statusStripProgressBar.Minimum;
             }
             _statusStripProgressBar.Increment();
-            _shiftX = _shiftX < _plotChart.Size.Width ? _shiftX + 1 : 0;
             _plotChart.Points = GenerateSinChartPoints(_plotChart.Size, _shiftX);
+            _shiftX = _shiftX < _plotChart.Size.Width ? _shiftX + 1 : 0;
         }
 
         private void bNextPressed(object sender, EventArgs e)
