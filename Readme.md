@@ -29,3 +29,5 @@ Uses only Console class.
 	* Navigate to specific Scoreboard (Screen)
 	* Go Back
 	* Pass data
+	
+[![Example application video on Windows](https://youtu.be/dqbhSkQzs80)](https://youtu.be/dqbhSkQzs80)
