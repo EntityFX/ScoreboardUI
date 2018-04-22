@@ -26,7 +26,7 @@ namespace EntityFX.ScoreboardUI.Render
                     MenuForegroundColor = ConsoleColor.DarkBlue,
                     MessageBoxBackgroundColor = ConsoleColor.DarkBlue,
                     MessageBoxForegroundColor = ConsoleColor.Yellow,
-                    WarningMessageBoxBackgroundColor = ConsoleColor.Yellow,
+                    WarningMessageBoxBackgroundColor = ConsoleColor.DarkYellow,
                     WarningMessageBoxForegroundColor = ConsoleColor.Black
                 };
             }
@@ -37,24 +37,26 @@ namespace EntityFX.ScoreboardUI.Render
                 return new ColorScheme()
                 {
                     PrimaryBackgroundColor = ConsoleColor.Black,
-                    PrimaryForegroundColor = ConsoleColor.Green,
+                    PrimaryForegroundColor = ConsoleColor.DarkGreen,
                     SecondaryBackgroundColor = ConsoleColor.Gray,
-                    SecondaryForegroundColor = ConsoleColor.Green,
-                    BorderColor = ConsoleColor.Green,
+                    SecondaryForegroundColor = ConsoleColor.DarkGreen,
+                    BorderColor = ConsoleColor.DarkGreen,
                     BoxesBackgroundColor = ConsoleColor.Gray,
-                    BoxesForegroundColor = ConsoleColor.Green,
-                    ButtonsBackgroundColor = ConsoleColor.Green,
+                    BoxesForegroundColor = ConsoleColor.DarkGreen,
+                    ButtonsBackgroundColor = ConsoleColor.DarkGreen,
                     ButtonsForegroundColor = ConsoleColor.White,
                     FocusedBackgroundColor = ConsoleColor.Gray,
                     FocusedForegroundColor = ConsoleColor.Black,
                     DisabledBackgroundColor = ConsoleColor.Black,
                     DisabledForegroundColor = ConsoleColor.Gray,
                     MenuBackgroundColor = ConsoleColor.Gray,
-                    MenuForegroundColor = ConsoleColor.Green,
+                    MenuForegroundColor = ConsoleColor.DarkGreen,
                     MessageBoxBackgroundColor = ConsoleColor.Black,
-                    MessageBoxForegroundColor = ConsoleColor.Green,
-                    WarningMessageBoxBackgroundColor = ConsoleColor.Yellow,
-                    WarningMessageBoxForegroundColor = ConsoleColor.Black
+                    MessageBoxForegroundColor = ConsoleColor.DarkGreen,
+                    WarningMessageBoxBackgroundColor = ConsoleColor.DarkYellow,
+                    WarningMessageBoxForegroundColor = ConsoleColor.Black,
+                    ErrorMessageBoxBackgroundColor = ConsoleColor.DarkRed,
+                    ErrorMessageBoxForegroundColor = ConsoleColor.Black
                 };
             }
         }

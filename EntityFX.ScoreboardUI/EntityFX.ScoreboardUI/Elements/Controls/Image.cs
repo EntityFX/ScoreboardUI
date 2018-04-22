@@ -6,18 +6,38 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 {
     public class Image : ControlBase, ISizable
     {
-        private char[,] _imageArray;
+        private (ConsoleColor Color, char Char)[,] _imageArray;
+
+        public bool UseColors { get; set; } = false;
+
+        public bool UseInvertedColors { get; set; } = false;
 
         public Image()
         {
+            UseColors = false;
         }
 
         public Image(char[,] imageArray)
         {
+            UseColors = false;
+            (ConsoleColor Color, char Char)[,] coloredImageArray = new (ConsoleColor, char)[imageArray.GetLength(0), imageArray.GetLength(1)];
+            for (int y = 0; y < imageArray.GetLength(0); y++)
+            {
+                for (int x = 0; x < imageArray.GetLength(1); x++)
+                {
+                    coloredImageArray[y, x] = (Color : ForegroundColor, Char: imageArray[y, x]);
+                }
+            }
+            ImageArray = coloredImageArray;
+        }
+
+        public Image((ConsoleColor Color, char Char)[,] imageArray)
+        {
+            UseColors = true;
             ImageArray = imageArray;
         }
 
-        public char[,] ImageArray
+        public (ConsoleColor Color, char Char)[,] ImageArray
         {
             get { return _imageArray; }
             set
@@ -53,7 +73,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 
         public void Clear()
         {
-            _imageArray = new char[Size.Height, Size.Width]; 
+            _imageArray = new(ConsoleColor Color, char Char)[Size.Height, Size.Width]; 
         }
     }
 }

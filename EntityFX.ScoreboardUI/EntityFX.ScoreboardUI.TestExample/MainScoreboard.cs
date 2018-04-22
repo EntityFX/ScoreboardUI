@@ -145,7 +145,7 @@ namespace EntityFx.ScorbordUI.TestExample
             _button2.Pressed += button2_Pressed;
             RootPanel.AddChild(_button2);
 
-            _progressBar1 = new ProgressBar { Location = new Point { Left = 3, Top = 3 }, Width = 74 };
+            _progressBar1 = new ProgressBar { Location = new Point { Left = 3, Top = 3 }, Width = 74, TextAligment = TitleAligment.Left};
             RootPanel.AddChild(_progressBar1);
 
             _bnext1 = new Button { Location = new Point { Left = 40, Top = 22 }, Width = 10, Text = "Next 1", Tag = 1 };
@@ -347,7 +347,7 @@ namespace EntityFx.ScorbordUI.TestExample
                         Navigate<ThirdScoreboard>();
                         break;
                     case 3:
-                        MessageBox.Show("Do you really want to do this?", MessageBoxResult, "Some title", MessageBoxTypeEnum.Question, MessageBoxButtonsEnum.YesNo);
+                        MessageBox.Show("Do you really want to do this?", MessageBoxResult, "Some title", MessageBoxTypeEnum.Error, MessageBoxButtonsEnum.YesNo);
                         break;
 
                 }

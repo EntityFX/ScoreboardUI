@@ -15,7 +15,7 @@ namespace EntityFX.ScoreboardUI.Render
 {
     internal class DefaultRenderer : IRenderer
     {
-        public IConsoleAdapter ConsoleAdapter { get;  }
+        public IConsoleAdapter ConsoleAdapter { get; }
 
         public DefaultRenderer(IConsoleAdapter consoleAdapter, IRenderOptions renderOptions)
         {
@@ -347,7 +347,7 @@ namespace EntityFX.ScoreboardUI.Render
                 Top = initialCurosrTopPosition
             };
 
-            var expanderSize = new Size {Width = comboBox.Width - 1, Height = itemLinesToDraw};
+            var expanderSize = new Size { Width = comboBox.Width - 1, Height = itemLinesToDraw };
 
             if (expanded)
             {
@@ -380,7 +380,7 @@ namespace EntityFX.ScoreboardUI.Render
                 {
                     var rollerSize = (int)((comboBox.VisibleItemsCount / (float)comboBox.Items.Count) * (comboBox.VisibleItemsCount - 2));
                     var rollDiff = comboBox.Items.Count - comboBox.VisibleItemsCount;
-                    var rollerOffset = comboBox.SelectedIndex < comboBox.VisibleItemsCount ? 
+                    var rollerOffset = comboBox.SelectedIndex < comboBox.VisibleItemsCount ?
                         0 :
                         (int)(((comboBox.SelectedIndex - comboBox.VisibleItemsCount + 1) / (float)rollDiff) * (comboBox.VisibleItemsCount - 2 - rollerSize));
                     RenderVerticalScroll(
@@ -441,14 +441,40 @@ namespace EntityFX.ScoreboardUI.Render
                 image.Size,
                 image.BackgroundColor
             );
-            for (int y = 0; y < image.Size.Height; ++y)
+            if (image.UseColors)
             {
-                for (int x = 0; x < image.Size.Width; x++)
+                ConsoleColor previousColor = image.UseInvertedColors ? ConsoleAdapter.BackgroundColor : ConsoleAdapter.BackgroundColor;
+                for (int y = 0; y < image.Size.Height; ++y)
                 {
-                    ConsoleAdapter.MoveCursor(x + loc.Left, y + loc.Top);
-                    ConsoleAdapter.Write(image.ImageArray[y, x]);
+                    for (int x = 0; x < image.Size.Width; x++)
+                    {
+                        ConsoleAdapter.MoveCursor(x + loc.Left, y + loc.Top);
+                        if (image.UseInvertedColors)
+                        {
+                            ConsoleAdapter.BackgroundColor = image.ImageArray[y, x].Color;
+                            ConsoleAdapter.ForegroundColor = image.ForegroundColor;
+                        }
+                        else
+                        {
+                            ConsoleAdapter.ForegroundColor = image.ImageArray[y, x].Color;
+                        }
+                        ConsoleAdapter.Write(image.ImageArray[y, x].Char);
+                    }
+                }
+                ConsoleAdapter.ForegroundColor = previousColor;
+            }
+            else
+            {
+                for (int y = 0; y < image.Size.Height; ++y)
+                {
+                    for (int x = 0; x < image.Size.Width; x++)
+                    {
+                        ConsoleAdapter.MoveCursor(x + loc.Left, y + loc.Top);
+                        ConsoleAdapter.Write(image.ImageArray[y, x].Char);
+                    }
                 }
             }
+
         }
 
         private void RenderLabel(Label label)
@@ -547,23 +573,42 @@ namespace EntityFX.ScoreboardUI.Render
             {
                 int titleLength = progressBar.VisibleText.Length;
                 int left = 0;
+                int offset = 0;
                 switch (progressBar.TextAligment)
                 {
                     case TitleAligment.Left:
                         left = location.Left;
-                        ConsoleAdapter.MoveCursor(location.Left, location.Top);
+                        offset = 0;
                         break;
                     case TitleAligment.Center:
-                        left = (progressBar.Width / 2) - (titleLength / 2) + location.Left;
+                        offset = (progressBar.Width / 2) - (titleLength / 2);
+                        left = offset + location.Left;
                         break;
                     case TitleAligment.Right:
-                        left = progressBar.Width - titleLength + location.Left;
+                        offset = progressBar.Width - titleLength;
+                        left = offset + location.Left;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("aligment");
                 }
+                ConsoleAdapter.MoveCursor(location.Left, location.Top);
+                var intersection = size - offset < 0 ? 0 : size - offset;
+                var filledString = progressBar.VisibleText.Substring(0, intersection > progressBar.VisibleText.Length ? progressBar.VisibleText.Length : intersection);
+                var nonFilledString =
+                    progressBar.VisibleText.Substring(intersection > progressBar.VisibleText.Length ? progressBar.VisibleText.Length : intersection);
+
+                ConsoleAdapter.BackgroundColor = progressBar.StripeColor;
+                ConsoleAdapter.ForegroundColor = progressBar.BackgroundColor;
                 ConsoleAdapter.MoveCursor(left, location.Top);
-                ConsoleAdapter.Write(progressBar.VisibleText);
+                ConsoleAdapter.Write(filledString);
+
+                if (!string.IsNullOrEmpty(nonFilledString))
+                {
+                    ConsoleAdapter.BackgroundColor = progressBar.BackgroundColor;
+                    ConsoleAdapter.ForegroundColor = progressBar.StripeColor;
+                    ConsoleAdapter.MoveCursor(left + filledString.Length, location.Top);
+                    ConsoleAdapter.Write(nonFilledString);
+                }
             }
         }
 
@@ -593,31 +638,31 @@ namespace EntityFX.ScoreboardUI.Render
             ConsoleAdapter.ForegroundColor = control.BorderForegroundColor;
             RenderVerticalLine(
                 new Point
-            {
-                Left = location.Left + 1,
-                Top = location.Top
-            },
+                {
+                    Left = location.Left + 1,
+                    Top = location.Top
+                },
                 size.Width - 2, borderCharType.HorizontalChar);
             RenderVerticalLine(
                 new Point
-            {
-                Left = location.Left + 1,
-                Top = location.Top + size.Height - 1
-            },
+                {
+                    Left = location.Left + 1,
+                    Top = location.Top + size.Height - 1
+                },
                 size.Width - 2, borderCharType.HorizontalChar);
             RenderHorizontalLine(
                 new Point
-            {
-                Left = location.Left,
-                Top = location.Top + 1
-            },
+                {
+                    Left = location.Left,
+                    Top = location.Top + 1
+                },
                 size.Height - 2, borderCharType.VerticalChar);
             RenderHorizontalLine(
                 new Point
-            {
-                Left = location.Left + size.Width - 1,
-                Top = location.Top + 1
-            },
+                {
+                    Left = location.Left + size.Width - 1,
+                    Top = location.Top + 1
+                },
                 size.Height - 2, borderCharType.VerticalChar);
 
             ConsoleAdapter.MoveCursor(location.Left + size.Width - 1, location.Top + size.Height - 1);

@@ -22,7 +22,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.Charts
                 {
                     if (point.Left < _image.Size.Width && point.Top < _image.Size.Height)
                     {
-                        _image.ImageArray[point.Top, point.Left] = PlotSymbol;
+                        _image.ImageArray[point.Top, point.Left] = (Color : BackgroundColor, Char : PlotSymbol);
                     }
                 }
 
@@ -50,7 +50,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.Charts
             set
             {
                 _size = value;
-                _image.ImageArray = new char[value.Height, value.Width];
+                _image.ImageArray = new(ConsoleColor Color, char Char)[value.Height, value.Width];
             }
         }
     }

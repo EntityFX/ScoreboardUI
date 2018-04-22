@@ -70,12 +70,13 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
             MessageBox mb;
             int minWidth = 16;
             var largestTextLength = buttonsList.Select(i => i.Text.Length).Max();
-            width = largestTextLength > minWidth ? largestTextLength + 6 : minWidth;
+            width = largestTextLength + 6 > minWidth ? largestTextLength + 6 : minWidth;
             mb = new MessageBox(message, resultAction, title, type, direction, buttonsList)
             {
-                BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MessageBoxBackgroundColor,
-                ForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MessageBoxForegroundColor,
-                BorderForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.BorderColor,
+                BackgroundColor = GetBackgroundColor(type),
+                ForegroundColor = GetForegroundColor(type),
+                BorderForegroundColor = GetForegroundColor(type),
+                BorderBackgroundColor = GetBackgroundColor(type),
                 Size = new Size
                 {
                     Height = direction == MessageBoxButtonsDirectionEnum.Horizontal ? 10 : buttonsList.Count() * 3 + 3,
@@ -104,9 +105,10 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
             width = message.Length > minWidth ? message.Length + 2 : minWidth;
             mb = new MessageBox(message, resultAction, title, type, buttons, direction)
             {
-                BackgroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MessageBoxBackgroundColor,
-                ForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MessageBoxForegroundColor,
-                BorderForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.BorderColor,
+                BackgroundColor = GetBackgroundColor(type),
+                ForegroundColor = GetForegroundColor(type),
+                BorderForegroundColor = GetForegroundColor(type),
+                BorderBackgroundColor = GetBackgroundColor(type),
                 Size = new Size
                 {
                     Height = direction == MessageBoxButtonsDirectionEnum.Horizontal ? 10 : 20,
@@ -312,45 +314,45 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
                 case MessageBoxTypeEnum.Error:
                     imageArray = new[,]
                     {
-                        {' ', '*', ' '},
-                        {'*', ' ', '*'},
-                        {' ', ' ', '*'},
-                        {' ', '*', ' '},
                         {' ', ' ', ' '},
-                        {' ', '*', ' '}
+                        {'█', ' ', '█'},
+                        {' ', '█', ' '},
+                        {' ', '█', ' '},
+                        {' ', ' ', ' '},
+                        {'█', ' ', '█'}
                     };
                     break;
                 case MessageBoxTypeEnum.Warning:
                     imageArray = new[,]
                     {
-                        {' ', '*', ' '},
-                        {' ', '*', ' '},
-                        {' ', '*', ' '},
-                        {' ', '*', ' '},
+                        {' ', '█', ' '},
+                        {'░', '█', '░'},
+                        {' ', '█', ' '},
+                        {' ', '█', ' '},
                         {' ', ' ', ' '},
-                        {' ', '*', ' '}
+                        {' ', '█', ' '}
                     };
                     break;
                 case MessageBoxTypeEnum.Info:
                     imageArray = new[,]
                     {
-                        {' ', '*', ' '},
+                        {' ', '█', ' '},
                         {' ', ' ', ' '},
-                        {' ', '*', ' '},
-                        {' ', '*', ' '},
-                        {' ', '*', ' '},
-                        {'*', '*', '*'}
+                        {' ', '█', ' '},
+                        {' ', '█', ' '},
+                        {' ', '█', ' '},
+                        {'█', '█', '█'}
                     };
                     break;
                 case MessageBoxTypeEnum.Question:
                     imageArray = new[,]
                     {
-                        {' ', '*', ' '},
-                        {'*', ' ', '*'},
-                        {' ', ' ', '*'},
-                        {' ', '*', ' '},
-                        {' ', ' ', ' '},
-                        {' ', '*', ' '}
+                        {'░', '█', '░'},
+                        {'█', ' ', '█'},
+                        {' ', ' ', '█'},
+                        {' ', '█', '░'},
+                        {' ', '█', ' '},
+                        {' ', '█', ' '}
                     };
                     break;
                 default:
@@ -367,6 +369,41 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
                 BackgroundColor = BackgroundColor
             };
             RootPanel.AddChild(_messageBoxImage);
+        }
+
+        private static ConsoleColor GetBackgroundColor(MessageBoxTypeEnum type)
+        {
+            switch (type)
+            {
+                case MessageBoxTypeEnum.Error:
+                    return ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.WarningMessageBoxBackgroundColor;
+                case MessageBoxTypeEnum.Warning:
+                    return ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.WarningMessageBoxBackgroundColor;
+                case MessageBoxTypeEnum.Info:
+                case MessageBoxTypeEnum.Question:
+                case MessageBoxTypeEnum.None:
+                    return ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MessageBoxBackgroundColor;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
+
+        private static ConsoleColor GetForegroundColor(MessageBoxTypeEnum type)
+        {
+            switch (type)
+            {
+                case MessageBoxTypeEnum.Error:
+                    return ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.WarningMessageBoxForegroundColor;
+                case MessageBoxTypeEnum.Warning:
+                    return ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.WarningMessageBoxForegroundColor;
+                case MessageBoxTypeEnum.Info:
+                case MessageBoxTypeEnum.Question:
+                case MessageBoxTypeEnum.None:
+                    return ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.MessageBoxForegroundColor;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
         }
     }
 }
