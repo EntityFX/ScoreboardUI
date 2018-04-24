@@ -83,9 +83,9 @@ namespace EntityFX.ScoreboardUI
 
             _scoreboardNavigationStack.Push(stateItem);
             if (!Current.ScoreboardState.ScoreboardInitialized) Current.Scoreboard.InitializeInternal();
+            ScoreboardContext.CurrentState.ResetFocus();
             Current.Scoreboard.NavigateInternal(NavigationType.Navigate, stateItem.NavigationData);
             scoreboard.Render();
-            ScoreboardContext.CurrentState.ResetFocus();
         }
     }
 }

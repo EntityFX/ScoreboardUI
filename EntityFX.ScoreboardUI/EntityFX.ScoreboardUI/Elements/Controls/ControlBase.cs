@@ -136,7 +136,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 
         protected override bool PreRender()
         {
-            return base.PreRender() && ParentScoreboard.IsVisible;
+            return base.PreRender() && ParentScoreboard != null && ParentScoreboard.IsVisible;
         }
 
         protected override void PostRender()

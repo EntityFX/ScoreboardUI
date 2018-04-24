@@ -21,7 +21,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.StatusBar
             childControl.InternalControl.ForegroundColor = childControl.ForegroundColor;
             base.AddChild(childControl);
             var itemWidth = GetItemWidth(childControl);
-            if (childControl.ItemLocation == StatusStripItemLocationEnum.Left)
+            if (childControl.ItemLocation == ItemLocationEnum.Left)
             {
                 childControl.Location = new Point
                 {

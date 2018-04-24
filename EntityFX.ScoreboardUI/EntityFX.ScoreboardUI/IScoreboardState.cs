@@ -22,6 +22,8 @@ namespace EntityFX.ScoreboardUI
 
         void AddToControlList(ControlBase control);
 
+        void RemoveFromControlList(ControlBase control);
+
         void NextFocus();
 
         void PreviousFocus();

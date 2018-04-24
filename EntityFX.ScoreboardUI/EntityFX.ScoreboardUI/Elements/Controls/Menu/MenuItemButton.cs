@@ -32,8 +32,25 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.Menu
                 Text = Text,
                 Parent = this,
                 Location = new Point() { Top = 0 },
-                Position = PositionEnum.RELATIVE
+                Position = PositionEnum.RELATIVE,
+                IsEnabled = IsEnabled
             };
+        }
+
+        public override bool IsEnabled
+        {
+            get
+            {
+                return base.IsEnabled;
+            }
+            set
+            {
+                if (InternalControl != null) {
+                    InternalControl.IsEnabled = value;
+                }
+
+                base.IsEnabled = value;
+            }
         }
     }
 }

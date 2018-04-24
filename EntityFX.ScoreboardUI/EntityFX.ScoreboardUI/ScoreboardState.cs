@@ -19,12 +19,20 @@ namespace EntityFX.ScoreboardUI
 
         public void ChangeFocus(ControlBase control)
         {
+            ControlBase oldFocusedElement = FocusedElement;
+            SetFocus(control);
+            _internalFocusIndex = _controlsList.IndexOf(control);
+            oldFocusedElement?.Render();
+            control.Render();
+        }
+
+        public void SetFocus(ControlBase control)
+        {
             foreach (ControlBase itemControl in _controlsList)
             {
                 itemControl.IsFocused = false;
             }
             control.IsFocused = true;
-
         }
 
         public int InternalTabIndex
@@ -44,7 +52,7 @@ namespace EntityFX.ScoreboardUI
 
         public ControlBase FocusedElement
         {
-            get { return _controlsList.Count > 0 ? _controlsList[_internalFocusIndex] : null; }
+            get { return _controlsList.Count > 0 && _internalFocusIndex >=0  ? _controlsList[_internalFocusIndex] : null; }
         }
 
         public void Initialized()
@@ -67,7 +75,6 @@ namespace EntityFX.ScoreboardUI
         public void NextFocus()
         {
             ControlBase control;
-
             if (_controlsList.Count == 0) return;
 
             var previousControl = _internalFocusIndex == -1 ? _controlsList[0] : _controlsList[_internalFocusIndex];
@@ -87,7 +94,7 @@ namespace EntityFX.ScoreboardUI
             && !(control is MenuItemButton<object>) 
             && !(control is ComboBox)));
 
-            ChangeFocus(control);
+            SetFocus(control);
             previousControl.Render();
             control.Render();
         }
@@ -95,7 +102,7 @@ namespace EntityFX.ScoreboardUI
         public void PreviousFocus()
         {
             ControlBase control;
-
+            ControlBase oldFocusedElement = FocusedElement;
             if (_controlsList.Count == 0) return;
 
             var previousControl = _internalFocusIndex == _controlsList.Count - 1 ? _controlsList[0] : _controlsList[_internalFocusIndex];
@@ -115,7 +122,8 @@ namespace EntityFX.ScoreboardUI
                                             && !(control is MenuItemButton<object>)
                                             && !(control is ComboBox)));
 
-            ChangeFocus(control);
+            SetFocus(control);
+            oldFocusedElement?.Render();
             previousControl.Render();
             control.Render();
         }
@@ -129,6 +137,28 @@ namespace EntityFX.ScoreboardUI
         private void SortControlsByFocusIndex()
         {
             SortedControlsByFocusIndex = _controlsList.OrderBy(key => key.TabIndex);
+        }
+
+        public void RemoveFromControlList(ControlBase control)
+        {
+
+            var controls = _controlsList.Where(i => i.TabIndex > control.TabIndex);
+            var controlIndex = _controlsList.IndexOf(control);
+            if (controlIndex >=0 && controlIndex < _controlsList.Count)
+            {
+               var nextItems = _controlsList.GetRange(controlIndex, _controlsList.Count - controlIndex);
+                foreach (var item in nextItems)
+                {
+                    item.TabIndex--;
+                }
+            }
+
+
+            _controlsList.Remove(control);
+            if (ScoreboardInitialized)
+            {
+                SortControlsByFocusIndex();
+            }
         }
     }
 }

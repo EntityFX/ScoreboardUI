@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using EntityFX.ScoreboardUI.Elements.Controls;
 
 namespace EntityFX.ScoreboardUI.Elements.Controls.Menu
 {
     public class MenuItem<TData> : ControlBase
     {
         public ControlBase InternalControl { get; protected set; }
+
+        public ItemLocationEnum ItemLocation { get; set; }
 
         public TData Data { get; set; }
 

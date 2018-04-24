@@ -16,13 +16,13 @@ namespace EntityFX.ScoreboardUI
             ForegroundColor = ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.PrimaryForegroundColor;
         }
 
-        public Guid Uid { get; set; }
+        public Guid Uid { get; set; } = Guid.NewGuid();
 
         public string Name { get; set; }
 
         public bool IsVisible { get; set; }
 
-        public bool IsEnabled { get; set; }
+        public virtual bool IsEnabled { get; set; }
 
         public Point Location { get; set; }
 

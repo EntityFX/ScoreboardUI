@@ -66,11 +66,22 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
     MessageBoxButtonsDirectionEnum direction = MessageBoxButtonsDirectionEnum.Horizontal)
         {
             int width = 0;
+            int height = 0;
             ScoreboardContext.CurrentState.IsNavigating = true;
             MessageBox mb;
             int minWidth = 16;
             var largestTextLength = buttonsList.Select(i => i.Text.Length).Max();
             width = largestTextLength + 6 > minWidth ? largestTextLength + 6 : minWidth;
+            int left = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2 - width / 2;
+            int top = ScoreboardContext.Navigation.Current.Scoreboard.Size.Height / 2 - 5;
+            left = left < 0 ? 1 : left;
+            top = top < 0 ? 1 : top;
+            width = width > ScoreboardContext.Navigation.Current.Scoreboard.Size.Width ?
+    ScoreboardContext.Navigation.Current.Scoreboard.Size.Width - 2 :
+    width;
+            height = direction == MessageBoxButtonsDirectionEnum.Horizontal ? 10 : buttonsList.Count() * 2 + 5;
+            height = height > ScoreboardContext.Navigation.Current.Scoreboard.Size.Height ?
+    ScoreboardContext.Navigation.Current.Scoreboard.Size.Height - 2 : height;
             mb = new MessageBox(message, resultAction, title, type, direction, buttonsList)
             {
                 BackgroundColor = GetBackgroundColor(type),
@@ -79,13 +90,13 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
                 BorderBackgroundColor = GetBackgroundColor(type),
                 Size = new Size
                 {
-                    Height = direction == MessageBoxButtonsDirectionEnum.Horizontal ? 10 : buttonsList.Count() * 3 + 3,
+                    Height = height,
                     Width = width
                 },
                 Location = new Point
                 {
-                    Left = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2 - width / 2,
-                    Top = ScoreboardContext.Navigation.Current.Scoreboard.Size.Height / 2 - 4
+                    Left = left,
+                    Top = top
                 }
             };
             ScoreboardContext.Navigation.Navigate(mb);
@@ -103,6 +114,13 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
             MessageBox mb;
             int minWidth = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2;
             width = message.Length > minWidth ? message.Length + 2 : minWidth;
+            int left = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2 - width / 2;
+            int top = ScoreboardContext.Navigation.Current.Scoreboard.Size.Height / 2 - 4;
+            left = left < 0 ? 1 : left;
+            top = top < 0 ? 1 : top;
+            width = width > ScoreboardContext.Navigation.Current.Scoreboard.Size.Width ?
+                ScoreboardContext.Navigation.Current.Scoreboard.Size.Width - 2 :
+                width;
             mb = new MessageBox(message, resultAction, title, type, buttons, direction)
             {
                 BackgroundColor = GetBackgroundColor(type),
@@ -116,8 +134,8 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
                 },
                 Location = new Point
                 {
-                    Left = ScoreboardContext.Navigation.Current.Scoreboard.Size.Width / 2 - width / 2,
-                    Top = ScoreboardContext.Navigation.Current.Scoreboard.Size.Height / 2 - 4
+                    Left = left,
+                    Top = top
                 }
             };
             ScoreboardContext.Navigation.Navigate(mb);
@@ -125,9 +143,9 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
 
         }
 
-        public static void Alert(string message, Action<MessageBoxResultEnum> resultAction, string title)
+        public static void Alert(string message, Action<MessageBoxResultEnum, object> resultAction, string title, MessageBoxTypeEnum type = MessageBoxTypeEnum.None)
         {
-            Show(message);
+            Show(message, resultAction, title, type);
         }
 
         public static string Prompt(string message, Action<MessageBoxResultEnum> resultAction, string title)
@@ -143,25 +161,28 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
         public override void Initialize()
         {
             base.Initialize();
+            var left = Size.Width / 2 - _message.Length / 2;
+            left = left < 0 ? 5 : left;
             _labelMessage = new Label
             {
                 Text = _message,
                 Location = new Point
                 {
                     Top = 2,
-                    Left = Size.Width / 2 - _message.Length / 2
+                    Left = left
                 },
                 BackgroundColor = BackgroundColor,
-                ForegroundColor = ConsoleColor.White
+                ForegroundColor = ForegroundColor
             };
             RootPanel.AddChild(_labelMessage);
             InitializeButtons();
             InitializeImage();
         }
 
-        protected override void OnEscapePressed()
+        protected override void OnEscapePressed(object data = null)
         {
-            base.OnEscapePressed();
+            (MessageBoxResultEnum, object) escapeResult = (MessageBoxResultEnum.None, null);
+            base.OnEscapePressed(escapeResult);
             PerfomMessageBoxResultAction(MessageBoxResultEnum.None, null);
         }
 
@@ -185,7 +206,8 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
                         Top = buttonStartTopPointer + 4
                     },
                     Width = buttonWidth,
-                    Tag = context.Data
+                    Tag = context.Data,
+                    IsEnabled = context.IsEnabled
                 };
                 Debug.WriteLine(this.Size.Width);
                 Debug.WriteLine(largestTextLength);
@@ -278,7 +300,6 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
 
         private void InitializeButtons()
         {
-
             if (_buttonsList != null)
             {
                 InitializeCustomButtons();
@@ -291,9 +312,9 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
 
         private void button_Pressed(object sender, EventArgs e)
         {
-            GoBack();
             var senderButton = (Button)sender;
             var enumResult = senderButton.Tag is MessageBoxResultEnum @enum ? @enum : MessageBoxResultEnum.None;
+            GoBack((enumResult, senderButton.Tag));
             PerfomMessageBoxResultAction(enumResult, senderButton.Tag);
         }
 
@@ -366,7 +387,8 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
                     Left = 1,
                     Top = 1
                 },
-                BackgroundColor = BackgroundColor
+                BackgroundColor = BackgroundColor,
+                ForegroundColor = GetForegroundColor(_messageBoxType)
             };
             RootPanel.AddChild(_messageBoxImage);
         }
@@ -376,7 +398,7 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
             switch (type)
             {
                 case MessageBoxTypeEnum.Error:
-                    return ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.WarningMessageBoxBackgroundColor;
+                    return ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.ErrorMessageBoxBackgroundColor;
                 case MessageBoxTypeEnum.Warning:
                     return ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.WarningMessageBoxBackgroundColor;
                 case MessageBoxTypeEnum.Info:
@@ -394,7 +416,7 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
             switch (type)
             {
                 case MessageBoxTypeEnum.Error:
-                    return ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.WarningMessageBoxForegroundColor;
+                    return ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.ErrorMessageBoxForegroundColor;
                 case MessageBoxTypeEnum.Warning:
                     return ScoreboardContext.RenderEngine.RenderOptions.ColorScheme.WarningMessageBoxForegroundColor;
                 case MessageBoxTypeEnum.Info:

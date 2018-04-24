@@ -4,7 +4,7 @@
     {
         public ControlBase InternalControl { get; protected set; }
 
-        public StatusStripItemLocationEnum ItemLocation { get; set; }
+        public ItemLocationEnum ItemLocation { get; set; }
 
         public override string Text
         {

@@ -121,15 +121,15 @@ namespace EntityFX.ScoreboardUI.Render
 
             foreach (var menuItem in scoreboard.Menu.Controls)
             {
-                RenderMenuItem(menuItem);
-            }
+                RenderMenuItem(menuItem);   
+            }   
         }
 
         private void RenderStripItem(StatusStripItem stripItem)
         {
             RenderControl(stripItem.InternalControl);
         }
-
+            
         private void RenderMenuItem<TData>(MenuItem<TData> stripItem)
         {
             RenderControl(stripItem.InternalControl);
@@ -481,7 +481,22 @@ namespace EntityFX.ScoreboardUI.Render
         {
             Point loc = label.AbsoluteLocation();
             ConsoleAdapter.MoveCursor(loc.Left, loc.Top);
-            ConsoleAdapter.Write(label.Text);
+            if (label.Text.Contains('\n'))
+            {
+                var textLines = label.Text.Split('\n').Select(t => t.Replace('\r', ','));
+                var startTop = loc.Top;
+                foreach (var text in textLines)
+                {
+                    ConsoleAdapter.MoveCursor(loc.Left, startTop);
+                    ConsoleAdapter.Write(text);
+                    startTop++;
+                }
+            }
+            else
+            {
+                ConsoleAdapter.MoveCursor(loc.Left, loc.Top);
+                ConsoleAdapter.Write(label.Text);
+            }
         }
 
         private void RenderCheckBox(Checkbox checkbox)

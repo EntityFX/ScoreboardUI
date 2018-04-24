@@ -25,17 +25,60 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.Menu
             childControl.InternalControl.ForegroundColor = childControl.ForegroundColor;
             base.AddChild(childControl);
             var itemWidth = GetItemWidth(childControl);
-
-            childControl.Location = new Point
+            if (childControl.ItemLocation == ItemLocationEnum.Left)
             {
-                Left = _leftOffset,
-                Top = 0
-            };
-            _leftOffset += itemWidth + 1;
+                childControl.Location = new Point
+                {
+                    Left = _leftOffset,
+                    Top = 0
+                };
+                _leftOffset += itemWidth + 1;
+            }
+            else
+            {
+                if (_rightOffset == -1)
+                {
+                    _rightOffset = ParentScoreboard.Size.Width - 3;
+                }
+                _rightOffset -= (itemWidth + 1);
+
+                childControl.Location = new Point
+                {
+                    Left = _rightOffset,
+                    Top = 0
+                };
+            }
 
             if (childControl is MenuItemButton<object> button)
             {
                 button.KeyPress += Button_KeyPress;
+            }
+        }
+
+        public virtual void Clear()
+        {
+            if (controls != null && controls.Any())
+            {
+                var menuControls = controls.OfType<MenuItemButton<object>>().ToArray();
+                foreach (var item in menuControls)
+                {
+                    item.KeyPress -= Button_KeyPress;
+                    ClearInternal(item);
+                    RemoveChild(item);
+                }
+            }
+        }
+
+        protected virtual void ClearInternal(MenuItemButton<object> menuItem)
+        {
+            if (menuItem.SubMenuItems != null && menuItem.SubMenuItems.Any())
+            {
+                foreach (var subMenu in menuItem.SubMenuItems)
+                {
+                    subMenu.KeyPress -= Button_KeyPress;
+                    ClearInternal(subMenu);
+                    RemoveChild(subMenu);
+                }
             }
         }
 
@@ -65,10 +108,15 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.Menu
             if (sender.SubMenuItems != null && sender.SubMenuItems.Any())
             {
                 MessageBox.MessageBox.Show("Select option",
-                    sender.SubMenuItems.Select(i => new SubmenuContext<object>(){ Data = i.Data, Text = i.Text}), (e1, data) =>
+                    sender.SubMenuItems.Select(i => new SubmenuContext<object>()
                     {
-                        Pressed?.Invoke(sender, data);
-                    }, sender.Text, MessageBoxTypeEnum.None,
+                        Data = i.Data,
+                        Text = i.Text,
+                        IsEnabled = i.IsEnabled
+                    }), (e1, data) =>
+{
+    Pressed?.Invoke(sender, data);
+}, sender.Text, MessageBoxTypeEnum.None,
                     MessageBoxButtonsDirectionEnum.Vertical);
             }
             else

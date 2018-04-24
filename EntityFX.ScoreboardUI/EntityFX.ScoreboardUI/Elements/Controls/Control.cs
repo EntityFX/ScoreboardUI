@@ -28,6 +28,13 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
             childControl.CompositionLevel = CompositionLevel + 1;
         }
 
+        public virtual void RemoveChild(T childControl)
+        {
+            childControl.Parent = null;
+            ScoreboardContext.CurrentState.RemoveFromControlList(childControl);
+            controls.Remove(childControl);
+        }
+
         protected override void PostRender()
         {
             if (_renderChildren)
