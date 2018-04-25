@@ -270,6 +270,9 @@ namespace EntityFX.ScoreboardUI.Render
 
         private void RenderListView(ListView listView)
         {
+            if (listView.ItemsControls == null) {
+                return;
+            }
             foreach (var listViewItemsControl in listView.ItemsControls)
             {
                 RenderListViewItem(listViewItemsControl);
@@ -326,24 +329,25 @@ namespace EntityFX.ScoreboardUI.Render
 
         private void RenderComboBox(ComboBox comboBox)
         {
+            Point loc = comboBox.AbsoluteLocation();
             ConsoleAdapter.Write(new string(' ', comboBox.Width));
-            ConsoleAdapter.MoveCursor(comboBox.Location.Left, comboBox.Location.Top);
+            ConsoleAdapter.MoveCursor(loc.Left, loc.Top);
             ConsoleAdapter.Write(comboBox.VisibleText);
-            ConsoleAdapter.MoveCursor(comboBox.Location.Left + comboBox.Width - 1, comboBox.Location.Top);
+            ConsoleAdapter.MoveCursor(loc.Left + comboBox.Width - 1, loc.Top);
             ConsoleColor saveColor = ConsoleAdapter.BackgroundColor;
             ConsoleAdapter.BackgroundColor = comboBox.ExpanderBackground;
 
             var expanded = comboBox.DroppedDown;
             ConsoleAdapter.Write(expanded ? '▲' : '▼');
             ConsoleAdapter.BackgroundColor = saveColor;
-            var initialCurosrTopPosition = comboBox.Location.Top + 1;
+            var initialCurosrTopPosition = loc.Top + 1;
             var itemLinesToDraw = comboBox.Items.Count > comboBox.VisibleItemsCount
                                                         ? comboBox.VisibleItemsCount
                                                         : comboBox.Items.Count;
 
             var expanderLocation = new Point
             {
-                Left = comboBox.Location.Left + 1,
+                Left = loc.Left + 1,
                 Top = initialCurosrTopPosition
             };
 
@@ -351,7 +355,7 @@ namespace EntityFX.ScoreboardUI.Render
 
             if (expanded)
             {
-                ConsoleAdapter.MoveCursor(comboBox.Location.Left + comboBox.Width - 1, comboBox.Location.Top);
+                ConsoleAdapter.MoveCursor(loc.Left + comboBox.Width - 1, loc.Top);
 
                 RenderBackgroundBox(
                     expanderLocation,
@@ -364,7 +368,7 @@ namespace EntityFX.ScoreboardUI.Render
                 var startItem = comboBox.SelectedIndex >= comboBox.VisibleItemsCount ? comboBox.SelectedIndex - comboBox.VisibleItemsCount + 1 : 0;
                 for (int i = startItem; i < startItem + itemLinesToDraw; i++)
                 {
-                    ConsoleAdapter.MoveCursor(comboBox.Location.Left + 1, initialCurosrTopPosition);
+                    ConsoleAdapter.MoveCursor(loc.Left + 1, initialCurosrTopPosition);
                     if (comboBox.Items[i] == comboBox.Items[comboBox.SelectedIndex])
                     {
                         ConsoleAdapter.BackgroundColor = RenderOptions.ColorScheme.FocusedBackgroundColor;
@@ -384,7 +388,7 @@ namespace EntityFX.ScoreboardUI.Render
                         0 :
                         (int)(((comboBox.SelectedIndex - comboBox.VisibleItemsCount + 1) / (float)rollDiff) * (comboBox.VisibleItemsCount - 2 - rollerSize));
                     RenderVerticalScroll(
-                        new Point() { Left = comboBox.Location.Left + comboBox.Width - 1, Top = comboBox.Location.Top + 1 },
+                        new Point() { Left = loc.Left + comboBox.Width - 1, Top = loc.Top + 1 },
                         comboBox.VisibleItemsCount,
                         rollerSize,
                         rollerOffset
@@ -393,7 +397,6 @@ namespace EntityFX.ScoreboardUI.Render
             }
             else
             {
-
                 RenderBackgroundBox(
                     expanderLocation,
                     expanderSize,
@@ -404,9 +407,27 @@ namespace EntityFX.ScoreboardUI.Render
                     Left = expanderLocation.Left + expanderSize.Width,
                     Top = expanderLocation.Top + expanderSize.Height
                 }).Where(_ => _ != comboBox);
-                foreach (var overlappedControl in overlapped)
+
+                RenderOverridedExcept(overlapped, comboBox);
+            }
+        }
+
+        private void RenderOverridedExcept(IEnumerable<ControlBase> controls, ControlBase controlToExclude)
+        {
+            foreach (var controlBase in controls)
+            {
+                var containerControl = controlBase as Control<ControlBase>;
+                if (containerControl != null)
                 {
-                    overlappedControl.Render();
+                    RenderOverridedExcept(containerControl.Controls, controlToExclude);
+                    RenderControl(containerControl);
+                }
+                else
+                {
+                    if (controlBase != controlToExclude)
+                    {
+                        RenderControl(controlBase);
+                    }
                 }
             }
         }
@@ -508,8 +529,9 @@ namespace EntityFX.ScoreboardUI.Render
 
         private void RenderTextBox(TextBox textBox)
         {
+            Point loc = textBox.AbsoluteLocation();
             ConsoleAdapter.Write(new string(' ', textBox.InputLength));
-            ConsoleAdapter.MoveCursor(textBox.Location.Left, textBox.Location.Top);
+            ConsoleAdapter.MoveCursor(loc.Left, loc.Top);
             ConsoleAdapter.Write(textBox.VisibleText);
         }
 
