@@ -52,7 +52,7 @@ namespace EntityFx.ScorbordUI.TestExample
             }
         }
         
-        protected override void OnEscapePressed()
+        protected override void OnEscapePressed(object data = null)
         {
             GoBack(255);
         }

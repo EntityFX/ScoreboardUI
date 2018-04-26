@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using EntityFX.ScoreboardUI.Drawing;
 
 namespace EntityFX.ScoreboardUI.Elements.Controls
 {
 
-    public class ListView: ListControlBase<object>, ILinearable, ICloneable
+    public class ListView<TItem> : ListControlBase<TItem>, ILinearable, ICloneable, IListView where TItem : class
     {
         public int Width { get; set; }
 
@@ -16,12 +17,16 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 
         public IEnumerable<ListViewItem> ItemsControls { get; private set; }
 
-        public event EventHandler<ItemInformation> ItemDataBound;
+        public event EventHandler<ItemInformation<TItem>> ItemDataBound;
 
         protected override void OnItemsChanged()
         {
             var itemsControls = new List<ListViewItem>();
             var top = 0;
+            if (Template == null)
+            {
+                new InvalidOperationException("Template is null");
+            }
             foreach (var item in Items)
             {
                 var itemControls = (ListViewItem) Template.Clone();
@@ -35,16 +40,16 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
                     control.CompositionLevel = CompositionLevel + 1;
                 }
                 itemsControls.Add(itemControls);
-                ItemDataBound?.Invoke(this, new ItemInformation { Item = item, ItemControls = itemControls });
+                ItemDataBound?.Invoke(this, new ItemInformation<TItem> { Item = item, ItemControls = itemControls.Controls.ToArray() });
             }
             ItemsControls = itemsControls;
         }
 
-        public class ItemInformation
+        public class ItemInformation<TItem> where TItem : class
         {
-            public ListViewItem ItemControls { get; set; }
+            public ControlBase[] ItemControls { get; set; }
 
-            public object Item { get; set; }
+            public TItem Item { get; set; }
         }
     }
 }

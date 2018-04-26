@@ -9,10 +9,16 @@ namespace EntityFX.ScoreboardUI
             () => new StoreboardNavigationEngine()
             );
 
-        public static IStoreboardNavigationEngine Navigation
-        {
-            get { return _navigation.Value; }
-        }
+        private static readonly Lazy<IRenderer> _renderer = new Lazy<IRenderer>(
+            () =>
+            {
+                var renderer = new DefaultRenderer(new ConsoleAdapter(), new DefaultRenderOptions() { ColorScheme = ColorSchemas.Matrix });
+                renderer.Initialize();
+                return renderer;
+            }
+        );
+
+        public static IStoreboardNavigationEngine Navigation => _navigation.Value;
 
         public static IScoreboardState CurrentState
         {
@@ -24,14 +30,6 @@ namespace EntityFX.ScoreboardUI
             }
         }
 
-        public static IRenderer RenderEngine
-        {
-            get
-            {
-                var renderer = new DefaultRenderer(new ConsoleAdapter(), new DefaultRenderOptions() { ColorScheme = ColorSchemas.Matrix});
-                renderer.Initialize();
-                return renderer;
-            }
-        }
+        public static IRenderer RenderEngine => _renderer.Value;
     }
 }

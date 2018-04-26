@@ -51,5 +51,18 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
                 rootPanelControl.Initialize();
             }
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                foreach (var control in Controls)
+                {
+                    control.Dispose();
+                }
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

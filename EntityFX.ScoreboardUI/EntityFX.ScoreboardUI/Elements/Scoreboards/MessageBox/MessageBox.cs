@@ -162,7 +162,7 @@ namespace EntityFX.ScoreboardUI.Elements.MessageBox
         {
             base.Initialize();
             var left = Size.Width / 2 - _message.Length / 2;
-            left = left < 0 ? 5 : left;
+            left = left < 5 ? 5 : left;
             _labelMessage = new Label
             {
                 Text = _message,

@@ -4,7 +4,7 @@ using EntityFX.ScoreboardUI.Drawing;
 
 namespace EntityFX.ScoreboardUI
 {
-    public abstract class UiElement
+    public abstract class UiElement : IDisposable
     {
         private static readonly object _syncObject = new object();
 
@@ -66,7 +66,7 @@ namespace EntityFX.ScoreboardUI
 
         protected virtual bool PreRender()
         {
-            return ScoreboardContext.CurrentState.ScoreboardInitialized && !ScoreboardContext.CurrentState.IsNavigating;
+            return ScoreboardContext.CurrentState.ScoreboardInitialized;
         }
 
         protected abstract void PostRender();
@@ -107,6 +107,19 @@ namespace EntityFX.ScoreboardUI
             {
                 handler(this, e);
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

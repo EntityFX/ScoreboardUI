@@ -256,26 +256,26 @@ namespace EntityFx.ScorbordUI.TestExample
             _timeStripItem = new StatusStripLabel
             {
                 Text = "Item 3",
-                ItemLocation = StatusStripItemLocationEnum.Right
+                ItemLocation = ItemLocationEnum.Right
             };
             StatusStrip.AddChild(_timeStripItem);
 
             StatusStrip.AddChild(new StatusStripLabel
             {
                 Text = "Item 4",
-                ItemLocation = StatusStripItemLocationEnum.Right
+                ItemLocation = ItemLocationEnum.Right
             });
 
             StatusStrip.AddChild(new StatusStripButton
             {
                 Text = "But 1",
-                ItemLocation = StatusStripItemLocationEnum.Left
+                ItemLocation = ItemLocationEnum.Left
             });
 
             StatusStrip.AddChild(new StatusStripButton
             {
                 Text = "But 2",
-                ItemLocation = StatusStripItemLocationEnum.Left
+                ItemLocation = ItemLocationEnum.Left
             });
 
             _statusStripProgressBar = new StatusStripProgressBar
@@ -347,7 +347,7 @@ namespace EntityFx.ScorbordUI.TestExample
                         Navigate<ThirdScoreboard>();
                         break;
                     case 3:
-                        MessageBox.Show("Do you really want to do this?", MessageBoxResult, "Some title", MessageBoxTypeEnum.Error, MessageBoxButtonsEnum.YesNo);
+                        MessageBox.Show("Do you really want to do this\nSecond line is very-very-loooooong and so loooong as you seee there as you can\nSecond Line\nLine three\nLine five?\nLine six\nSeven\nEight", MessageBoxResult, "Some title", MessageBoxTypeEnum.Warning, MessageBoxButtonsEnum.YesNo);
                         break;
 
                 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using EntityFX.ScoreboardUI.Elements.Scoreboards;
+using EntityFX.ScoreboardUI.Render;
 
 namespace EntityFX.ScoreboardUI
 {
@@ -22,6 +23,12 @@ namespace EntityFX.ScoreboardUI
                 Thread.Sleep(1);
                 PerformStepInternal();
             }
+        }
+
+        public IRenderOptions RenderOptions
+        {
+            get => ScoreboardContext.RenderEngine.RenderOptions;
+            set => ScoreboardContext.RenderEngine.RenderOptions = value;
         }
 
         public void Close()

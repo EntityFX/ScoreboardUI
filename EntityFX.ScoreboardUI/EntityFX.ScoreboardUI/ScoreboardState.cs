@@ -75,27 +75,36 @@ namespace EntityFX.ScoreboardUI
         public void NextFocus()
         {
             ControlBase control;
+            ControlBase previousControl = null;
             if (_controlsList.Count == 0) return;
 
-            var previousControl = _internalFocusIndex == -1 ? _controlsList[0] : _controlsList[_internalFocusIndex];
-            do
+            if (_controlsList.Count == 1)
             {
-                _internalFocusIndex++;
-
-                if (_internalFocusIndex == _controlsList.Count)
+                control = _controlsList[0];
+            }
+            else
+            {
+                previousControl = _internalFocusIndex == -1 ? _controlsList[0] : _controlsList[_internalFocusIndex];
+                do
                 {
-                    _internalFocusIndex = 0;
-                }
+                    _internalFocusIndex++;
 
-                control = _controlsList[_internalFocusIndex];
-            } while (!control.IsEnabled || (!(control is ButtonBase) 
-            && !(control is TextBox) 
-            && !(control is StatusStripButton) 
-            && !(control is MenuItemButton<object>) 
-            && !(control is ComboBox)));
+                    if (_internalFocusIndex == _controlsList.Count)
+                    {
+                        _internalFocusIndex = 0;
+                    }
+
+                    control = _controlsList[_internalFocusIndex];
+                } while (!control.IsEnabled || (!(control is ButtonBase)
+                                                && !(control is TextBox)
+                                                && !(control is StatusStripButton)
+                                                && !(control is MenuItemButton<object>)
+                                                && !(control is ComboBox)));
+
+            }
 
             SetFocus(control);
-            previousControl.Render();
+            previousControl?.Render();
             control.Render();
         }
 

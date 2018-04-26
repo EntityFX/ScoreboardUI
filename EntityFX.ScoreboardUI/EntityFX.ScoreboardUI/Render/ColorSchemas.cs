@@ -18,6 +18,7 @@ namespace EntityFX.ScoreboardUI.Render
                     BoxesBackgroundColor = ConsoleColor.White,
                     BoxesForegroundColor = ConsoleColor.DarkBlue,
                     ButtonsBackgroundColor = ConsoleColor.DarkCyan,
+                    ButtonsForegroundColor = ConsoleColor.White,
                     FocusedBackgroundColor = ConsoleColor.DarkYellow,
                     FocusedForegroundColor = ConsoleColor.Black,
                     DisabledBackgroundColor = ConsoleColor.Gray,
@@ -27,7 +28,9 @@ namespace EntityFX.ScoreboardUI.Render
                     MessageBoxBackgroundColor = ConsoleColor.DarkBlue,
                     MessageBoxForegroundColor = ConsoleColor.Yellow,
                     WarningMessageBoxBackgroundColor = ConsoleColor.DarkYellow,
-                    WarningMessageBoxForegroundColor = ConsoleColor.Black
+                    WarningMessageBoxForegroundColor = ConsoleColor.Black,
+                    ErrorMessageBoxBackgroundColor = ConsoleColor.DarkRed,
+                    ErrorMessageBoxForegroundColor = ConsoleColor.Black
                 };
             }
         }

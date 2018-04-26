@@ -6,7 +6,7 @@ using EntityFX.ScoreboardUI.Elements.Controls.StatusBar;
 
 namespace EntityFX.ScoreboardUI.Elements.Scoreboards
 {
-    public class Scoreboard : UiElement, ISizable, IBorderable
+    public class Scoreboard : UiElement, ISizable, IBorderable, IDisposable
     {
         public Scoreboard(Panel rootPanel)
         {
@@ -177,6 +177,16 @@ namespace EntityFX.ScoreboardUI.Elements.Scoreboards
             {
                 rootPanelControl.Initialize();
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                RootPanel.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

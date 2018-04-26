@@ -2,8 +2,8 @@
 {
     public interface IRenderer
     {
-        IRenderOptions RenderOptions { get; }
-        IConsoleAdapter ConsoleAdapter { get; }
+        IRenderOptions RenderOptions { get; set; }
+        IConsoleAdapter ConsoleAdapter { get; set; }
         void Initialize();
 
         void Render(UiElement uiElement);

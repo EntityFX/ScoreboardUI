@@ -15,7 +15,7 @@ namespace EntityFX.ScoreboardUI.Render
 {
     internal class DefaultRenderer : IRenderer
     {
-        public IConsoleAdapter ConsoleAdapter { get; }
+        public IConsoleAdapter ConsoleAdapter { get; set; }
 
         public DefaultRenderer(IConsoleAdapter consoleAdapter, IRenderOptions renderOptions)
         {
@@ -135,7 +135,7 @@ namespace EntityFX.ScoreboardUI.Render
             RenderControl(stripItem.InternalControl);
         }
 
-        public IRenderOptions RenderOptions { get; private set; }
+        public IRenderOptions RenderOptions { get; set; }
 
         private void RenderControl(ControlBase control)
         {
@@ -247,7 +247,7 @@ namespace EntityFX.ScoreboardUI.Render
                 RenderComboBox(comboBox);
             }
 
-            var listView = control as ListView;
+            var listView = control as IListView;
             if (listView != null)
             {
                 RenderListView(listView);
@@ -268,7 +268,7 @@ namespace EntityFX.ScoreboardUI.Render
             ConsoleAdapter.ForegroundColor = previousForeground;
         }
 
-        private void RenderListView(ListView listView)
+        private void RenderListView(IListView listView)
         {
             if (listView.ItemsControls == null) {
                 return;
@@ -504,12 +504,35 @@ namespace EntityFX.ScoreboardUI.Render
             ConsoleAdapter.MoveCursor(loc.Left, loc.Top);
             if (label.Text.Contains('\n'))
             {
-                var textLines = label.Text.Split('\n').Select(t => t.Replace('\r', ','));
+                var textLines = label.Text.Split('\n').Select(t => t.Replace('\r', ',')).ToArray();
+
+                if (textLines.Length > 6)
+                {
+                    var textsList = textLines.Take(6).ToList();
+                    textsList.Add("...");
+                    textLines = textsList.ToArray();
+                }
+                else
+                {
+                    textLines = textLines;
+                }
+
                 var startTop = loc.Top;
                 foreach (var text in textLines)
                 {
+                    var currentText = text;
+                    if (label.ParentScoreboard != null)
+                    {
+                        var supposedTextLength = label.ParentScoreboard.Size.Width - label.Location.Left -
+                                                 (label.ParentScoreboard.IsBorderVisible ? 4 : 2);
+                        if (text.Length > supposedTextLength)
+                        {
+                            currentText = text.Substring(0, supposedTextLength) + "...";
+                        }
+                    }
+
                     ConsoleAdapter.MoveCursor(loc.Left, startTop);
-                    ConsoleAdapter.Write(text);
+                    ConsoleAdapter.Write(currentText);
                     startTop++;
                 }
             }

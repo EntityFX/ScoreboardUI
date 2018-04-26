@@ -38,39 +38,55 @@ namespace EntityFX.ScoreboardUI
         public void Navigate<TScoreboard>(object data = null) where TScoreboard : Scoreboard, new()
         {
             StateItem firstOrDefault =
-                _scoreboardNavigationStack.FirstOrDefault(_ => _ is TScoreboard);
+                _scoreboardNavigationStack.FirstOrDefault(_ => _.Scoreboard is TScoreboard);
             Scoreboard scoreboard;
+            StateItem state = null;
             if (firstOrDefault != null)
             {
                 scoreboard = firstOrDefault.Scoreboard;
 
-                if (scoreboard != null)
-                {
-                    Scoreboard popScoreboard = null;
-                    do
-                    {
-                        popScoreboard = _scoreboardNavigationStack.Pop().Scoreboard;
-                    } while (popScoreboard != null && scoreboard != popScoreboard);
-                }
+                NavigateBackward(firstOrDefault);
+                state = firstOrDefault;
             }
             else
             {
                 Current.ScoreboardState.IsNavigating = true;
                 scoreboard = new TScoreboard();
             }
-            Navigate(scoreboard, data);
+            Navigate(scoreboard, state, data);
         }
 
-        public void Navigate(Scoreboard scoreboard, object data = null)
+        public void NavigateFromStart<TScoreboard>(object data = null) where TScoreboard : Scoreboard, new()
         {
-            var stateItem = new StateItem
+            throw new System.NotImplementedException();
+        }
+
+        private void NavigateBackward(StateItem stateItem)
+        {
+            var scoreboard = stateItem.Scoreboard;
+
+            if (scoreboard != null)
+            {
+                Scoreboard popScoreboard = null;
+                do
+                {
+                    popScoreboard = _scoreboardNavigationStack.Pop().Scoreboard;
+                    popScoreboard.Dispose();
+                } while (popScoreboard != null && scoreboard != popScoreboard);
+            }
+
+            scoreboard.IsVisible = true;
+        }
+
+        public void Navigate(Scoreboard scoreboard, StateItem state = null, object data = null)
+        {
+            Current.ScoreboardState.IsNavigating = true;
+            var stateItem = state ?? new StateItem
             {
                 Scoreboard = scoreboard,
                 ScoreboardState = new ScoreboardState(),
                 NavigationData = data
             };
-
-            Current.ScoreboardState.IsNavigating = false;
 
             Current = stateItem;
 
@@ -83,8 +99,9 @@ namespace EntityFX.ScoreboardUI
 
             _scoreboardNavigationStack.Push(stateItem);
             if (!Current.ScoreboardState.ScoreboardInitialized) Current.Scoreboard.InitializeInternal();
-            ScoreboardContext.CurrentState.ResetFocus();
             Current.Scoreboard.NavigateInternal(NavigationType.Navigate, stateItem.NavigationData);
+            ScoreboardContext.CurrentState.ResetFocus();
+            Current.ScoreboardState.IsNavigating = false;
             scoreboard.Render();
         }
     }

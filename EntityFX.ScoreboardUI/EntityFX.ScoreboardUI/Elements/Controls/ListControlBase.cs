@@ -20,6 +20,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
             set
             {
                 _items = value;
+                OnItemsChanged();
             }
         }
 
