@@ -3,9 +3,17 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.6</Version>
-    <AssemblyVersion>1.0.6.0</AssemblyVersion>
-    <FileVersion>1.0.6.0</FileVersion>
+    <Version>1.0.7</Version>
+    <AssemblyVersion>1.0.7.0</AssemblyVersion>
+    <FileVersion>1.0.7.0</FileVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>TUI (Text User Interface) compatible with netstandard2.0 Uses only Console class.</Description>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/EntityFX/ScoreboardUI/master/LICENSE</PackageLicenseUrl>
+    <Copyright>Copyright (c) 2018 Artem Solopiy &lt;artem.solopiy@gmail.com&gt;</Copyright>
+    <Authors>Artem Solopiy</Authors>
+    <PackageProjectUrl>https://github.com/EntityFX/ScoreboardUI</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/EntityFX/ScoreboardUI</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Tui, Console UI, Pseudo UI</PackageTags>
   </PropertyGroup>
 </Project>
