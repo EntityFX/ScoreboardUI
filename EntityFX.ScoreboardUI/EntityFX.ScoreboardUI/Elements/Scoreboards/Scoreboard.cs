@@ -87,6 +87,14 @@ namespace EntityFX.ScoreboardUI.Elements.Scoreboards
             }
         }
 
+        public void NavigateFromStart<TScoreboard>(object data = null) where TScoreboard : Scoreboard, new()
+        {
+            if (PreNavigate())
+            {
+                ScoreboardContext.Navigation.NavigateFromStart<TScoreboard>(data);
+            }
+        }
+
         protected virtual bool PreNavigate()
         {
             return true;
@@ -183,10 +191,18 @@ namespace EntityFX.ScoreboardUI.Elements.Scoreboards
         {
             if (disposing)
             {
+                ClearEvents();
                 RootPanel.Dispose();
             }
 
             base.Dispose(disposing);
+        }
+
+        public override void ClearEvents()
+        {
+            base.ClearEvents();
+            EscapePress = null;
+            ScoreboardNavigate = null;
         }
     }
 }

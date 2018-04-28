@@ -58,7 +58,10 @@ namespace EntityFX.ScoreboardUI
 
         public void NavigateFromStart<TScoreboard>(object data = null) where TScoreboard : Scoreboard, new()
         {
-            throw new System.NotImplementedException();
+            Current.ScoreboardState.IsNavigating = true;
+            NavigateBackward(_scoreboardNavigationStack.First());
+            Scoreboard scoreboard = new TScoreboard();
+            Navigate(scoreboard, null, data);
         }
 
         private void NavigateBackward(StateItem stateItem)

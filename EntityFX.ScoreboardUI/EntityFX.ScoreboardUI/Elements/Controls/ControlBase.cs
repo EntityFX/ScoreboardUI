@@ -169,5 +169,13 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
         {
             return this.Copy();
         }
+
+
+        public override void ClearEvents()
+        {
+            base.ClearEvents();
+            TextChanged = null;
+            FocusChanged = null;
+        }
     }
 }       

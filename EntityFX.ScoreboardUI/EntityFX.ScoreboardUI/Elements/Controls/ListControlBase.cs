@@ -67,6 +67,11 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
             
         }
 
+        public virtual void Clear()
+        {
+
+        }
+
         public override void Initialize()
         {
             OnItemsChanged();

@@ -82,5 +82,12 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
         }
 
         public int Width { get; set; }
+
+        public override void ClearEvents()
+        {
+            base.ClearEvents();
+            DropClosed = null;
+            DropDown = null;
+        }
     }
 }

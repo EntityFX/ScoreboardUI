@@ -42,7 +42,22 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
                 itemsControls.Add(itemControls);
                 ItemDataBound?.Invoke(this, new ItemInformation<TItem> { Item = item, ItemControls = itemControls.Controls.ToArray() });
             }
+            Clear();
             ItemsControls = itemsControls;
+        }
+
+
+        public override void Clear()
+        {
+            if (ItemsControls == null) return;
+            foreach (var item in ItemsControls)
+            {
+                foreach (var control in item.Controls)
+                {
+                    ScoreboardContext.CurrentState.RemoveFromControlList(control);
+                    control.Dispose();
+                }
+            }
         }
 
         public class ItemInformation<TItem> where TItem : class
@@ -50,6 +65,12 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
             public ControlBase[] ItemControls { get; set; }
 
             public TItem Item { get; set; }
+        }
+
+        public override void ClearEvents()
+        {
+            base.ClearEvents();
+            ItemDataBound = null;
         }
     }
 }

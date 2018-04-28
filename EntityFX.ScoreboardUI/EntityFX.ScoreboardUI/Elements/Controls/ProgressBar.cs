@@ -125,5 +125,11 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
             }
             Value = newValue;
         }
+
+        public override void ClearEvents()
+        {
+            base.ClearEvents();
+            ValueChanged = null;
+        }
     }
 }

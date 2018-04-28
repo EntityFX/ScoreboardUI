@@ -26,5 +26,11 @@
         }
 
         public event CheckedChangeEventHandler CheckedChanged;
+
+        public override void ClearEvents()
+        {
+            base.ClearEvents();
+            CheckedChanged = null;
+        }
     }
 }

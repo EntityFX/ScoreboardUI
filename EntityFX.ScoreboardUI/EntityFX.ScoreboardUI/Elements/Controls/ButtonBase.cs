@@ -52,5 +52,11 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
         protected virtual void OnPressed(KeyPressEventArgs e)
         {
         }
+
+        public override void ClearEvents()
+        {
+            base.ClearEvents();
+            Pressed = null;
+        }
     }
 }

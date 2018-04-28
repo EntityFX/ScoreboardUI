@@ -1,9 +1,14 @@
 ﻿using System;
+using EntityFX.ScoreboardUI.Drawing;
 
 namespace EntityFX.ScoreboardUI.Render
 {
     public class ConsoleAdapter : IConsoleAdapter
     {
+
+
+        public Size Size { get; set; }
+
         public void Write(string value)
         {
             Console.Write(value);
@@ -16,7 +21,11 @@ namespace EntityFX.ScoreboardUI.Render
 
         public void MoveCursor(int left, int top)
         {
-            Console.SetCursorPosition(left, top);
+            if (left <= Size.Width && top <= Size.Height)
+            {
+                Console.SetCursorPosition(left, top);
+            }
+
         }
 
         public ConsoleColor ForegroundColor

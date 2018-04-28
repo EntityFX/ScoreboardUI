@@ -28,12 +28,12 @@ namespace EntityFX.ScoreboardUI.Render
             //_consoleAdapter.WindowHeight = RenderOptions.WindowHeight;
             //_consoleAdapter.WindowWidth = RenderOptions.WindowWidth;
             ConsoleAdapter.CursorVisible = false;
+            ConsoleAdapter.Size = new Size() {Width = RenderOptions.WindowWidth, Height = RenderOptions.WindowHeight};
         }
 
         public void Render(UiElement uiElement)
         {
-            var scoreboard = uiElement as Scoreboard;
-            if (scoreboard != null)
+            if (uiElement is Scoreboard scoreboard)
             {
                 RenderBackgroundBox(scoreboard.Location, scoreboard.Size, scoreboard.BackgroundColor);
                 if (scoreboard.IsBorderVisible)
@@ -50,9 +50,8 @@ namespace EntityFX.ScoreboardUI.Render
                 }
                 RenderTitle(scoreboard);
 
-                var messageBox = scoreboard as MessageBox;
 
-                if (messageBox != null)
+                if (scoreboard is MessageBox messageBox)
                 {
                 }
 
@@ -67,9 +66,8 @@ namespace EntityFX.ScoreboardUI.Render
                 Render(scoreboard.RootPanel);
             }
 
-            var panel = uiElement as Panel;
 
-            if (panel != null)
+            if (uiElement is Panel panel)
             {
                 foreach (ControlBase control in panel.Controls)
                 {
@@ -78,8 +76,7 @@ namespace EntityFX.ScoreboardUI.Render
                 RenderPanel(panel);
             }
 
-            var controlElement = uiElement as ControlBase;
-            if (controlElement != null)
+            if (uiElement is ControlBase controlElement)
             {
                 RenderControl(controlElement);
             }
@@ -152,9 +149,8 @@ namespace EntityFX.ScoreboardUI.Render
                 ConsoleAdapter.ForegroundColor = RenderOptions.ColorScheme.DisabledForegroundColor;
             }
 
-            var borderable = control as IBorderable;
             var sizeable = control as ISizable;
-            if (borderable != null && sizeable != null)
+            if (control is IBorderable borderable && sizeable != null)
             {
                 RenderBorder(borderable, control.Location, sizeable.Size, new BorderCharType
                 {
@@ -169,86 +165,72 @@ namespace EntityFX.ScoreboardUI.Render
 
             Point loc = control.AbsoluteLocation();
             ConsoleAdapter.MoveCursor(loc.Left, loc.Top);
-            var checkbox = control as Checkbox;
-            if (checkbox != null)
+            if (control is Checkbox checkbox)
             {
                 RenderCheckBox(checkbox);
             }
 
-            var radioButton = control as RadioButton;
-            if (radioButton != null)
+            if (control is RadioButton radioButton)
             {
                 RenderRadioButton(radioButton);
             }
 
-            var label = control as Label;
-            if (label != null)
+            if (control is Label label)
             {
                 RenderLabel(label);
             }
 
-            var passwordBox = control as PasswordBox;
-            if (passwordBox != null)
+            if (control is PasswordBox passwordBox)
             {
                 RenderPasswordBox(passwordBox);
             }
 
-            var text = control as TextBox;
-            if (text != null && !(control is PasswordBox))
+            if (control is TextBox text && !(control is PasswordBox))
             {
                 RenderTextBox(text);
             }
 
-            var button = control as Button;
-            if (button != null)
+            if (control is Button button)
             {
                 RenderButton(button);
             }
 
-            var progressBar = control as ProgressBar;
-            if (progressBar != null)
+            if (control is ProgressBar progressBar)
             {
                 RenderProgressBar(progressBar);
             }
 
-            var image = control as Image;
-            if (image != null)
+            if (control is Image image)
             {
                 RenderImage(image);
             }
 
-            var plotChart = control as PlotChart;
-            if (plotChart != null)
+            if (control is PlotChart plotChart)
             {
                 RenderPlotChart(plotChart);
             }
 
-            var panel = control as Panel;
-            if (panel != null)
+            if (control is Panel panel)
             {
                 RenderPanel(panel);
             }
 
-            var stripItem = control as StatusStripItem;
-            if (stripItem != null)
+            if (control is StatusStripItem stripItem)
             {
                 RenderStripItem(stripItem);
             }
 
-            var menuItem = control as MenuItem<object>;
-            if (menuItem != null)
+            if (control is MenuItem<object> menuItem)
             {
                 RenderMenuItem(menuItem);
             }
 
-            var comboBox = control as ComboBox;
-            if (comboBox != null)
+            if (control is ComboBox comboBox)
             {
                 RenderComboBox(comboBox);
             }
 
-            var listView = control as IListView;
-            if (listView != null)
+            if (control is IListView listView)
             {
                 RenderListView(listView);
             }
@@ -292,10 +274,9 @@ namespace EntityFX.ScoreboardUI.Render
             return ScoreboardContext.CurrentState.ControlsList.Where(_ =>
             {
                 var controlStartPoint = _.AbsoluteLocation();
-                var sizableControl = _ as ISizable;
                 var linerableControl = _ as ILinearable;
                 Point controlEndPoint;
-                if (sizableControl != null)
+                if (_ is ISizable sizableControl)
                 {
                     controlEndPoint = new Point
                     {
@@ -414,10 +395,10 @@ namespace EntityFX.ScoreboardUI.Render
 
         private void RenderOverridedExcept(IEnumerable<ControlBase> controls, ControlBase controlToExclude)
         {
-            foreach (var controlBase in controls)
+            var controlsArray = controls.ToArray();
+            foreach (var controlBase in controlsArray)
             {
-                var containerControl = controlBase as Control<ControlBase>;
-                if (containerControl != null)
+                if (controlBase is Control<ControlBase> containerControl)
                 {
                     RenderOverridedExcept(containerControl.Controls, controlToExclude);
                     RenderControl(containerControl);

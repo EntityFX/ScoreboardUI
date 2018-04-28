@@ -1,9 +1,12 @@
 ﻿using System;
+using EntityFX.ScoreboardUI.Drawing;
 
 namespace EntityFX.ScoreboardUI.Render
 {
     public interface IConsoleAdapter
     {
+        Size Size { get; set; }
+
         void Write(string value);
         void Write(char value);
 

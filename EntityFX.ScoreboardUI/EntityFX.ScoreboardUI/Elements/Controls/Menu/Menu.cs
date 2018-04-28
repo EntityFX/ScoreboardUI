@@ -124,5 +124,11 @@ namespace EntityFX.ScoreboardUI.Elements.Controls.Menu
                 Pressed?.Invoke(sender, sender.Data);
             }
         }
+
+        public override void ClearEvents()
+        {
+            base.ClearEvents();
+            Pressed = null;
+        }
     }
 }

@@ -113,6 +113,7 @@ namespace EntityFX.ScoreboardUI
         {
             if (disposing)
             {
+                ClearEvents();
             }
         }
 
@@ -120,6 +121,13 @@ namespace EntityFX.ScoreboardUI
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public virtual void ClearEvents()
+        {
+            KeyPress = null;
+            Initialized = null;
+            Rendered = null;
         }
     }
 }

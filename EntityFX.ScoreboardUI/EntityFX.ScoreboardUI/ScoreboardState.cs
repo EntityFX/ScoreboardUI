@@ -52,7 +52,7 @@ namespace EntityFX.ScoreboardUI
 
         public ControlBase FocusedElement
         {
-            get { return _controlsList.Count > 0 && _internalFocusIndex >=0  ? _controlsList[_internalFocusIndex] : null; }
+            get { return _controlsList.Count > 0 && _internalFocusIndex >=0 && _internalFocusIndex < _controlsList.Count ? _controlsList[_internalFocusIndex] : null; }
         }
 
         public void Initialized()
