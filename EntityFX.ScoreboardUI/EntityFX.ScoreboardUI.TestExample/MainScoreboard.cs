@@ -347,7 +347,8 @@ namespace EntityFx.ScorbordUI.TestExample
                         Navigate<ThirdScoreboard>();
                         break;
                     case 3:
-                        MessageBox.Show("Do you really want to do this\nSecond line is very-very-loooooong and so loooong as you seee there as you can\nSecond Line\nLine three\nLine five?\nLine six\nSeven\nEight", MessageBoxResult, "Some title", MessageBoxTypeEnum.Warning, MessageBoxButtonsEnum.YesNo);
+                        MessageBox.Show(@"Do you really want to do this\nSecond line is very-very-loooooong and so loooong 
+as you seee there as you can\nSecond Line\nLine three\nLine five?\nLine six\nSeven\nEight", MessageBoxResult, "Some title", MessageBoxTypeEnum.Warning, MessageBoxButtonsEnum.YesNo);
                         break;
 
                 }

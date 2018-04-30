@@ -10,11 +10,6 @@
             set
             {
                 IsCheckedInternal = value;
-                CheckedChangeEventHandler handler = CheckedChanged;
-                if (handler != null)
-                {
-                    handler(this);
-                }
                 ReRender();
             }
         }
@@ -23,6 +18,7 @@
         {
             base.Press(e);
             IsChecked = IsChecked != null ? !IsChecked : true;
+            CheckedChanged?.Invoke(this);
         }
 
         public event CheckedChangeEventHandler CheckedChanged;

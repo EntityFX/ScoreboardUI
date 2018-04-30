@@ -485,7 +485,7 @@ namespace EntityFX.ScoreboardUI.Render
             ConsoleAdapter.MoveCursor(loc.Left, loc.Top);
             if (label.Text.Contains('\n'))
             {
-                var textLines = label.Text.Split('\n').Select(t => t.Replace('\r', ',')).ToArray();
+                var textLines = label.Text.Split('\n').Select(t => t.Replace('\r', ' ')).ToArray();
 
                 if (textLines.Length > 6)
                 {
