@@ -74,7 +74,10 @@ namespace EntityFX.ScoreboardUI
                 do
                 {
                     popScoreboard = _scoreboardNavigationStack.Pop().Scoreboard;
-                    popScoreboard.Dispose();
+                    if (scoreboard != popScoreboard)
+                    {
+                        popScoreboard.Dispose();
+                    }
                 } while (popScoreboard != null && scoreboard != popScoreboard);
             }
 
@@ -106,6 +109,15 @@ namespace EntityFX.ScoreboardUI
             ScoreboardContext.CurrentState.ResetFocus();
             Current.ScoreboardState.IsNavigating = false;
             scoreboard.Render();
+        }
+
+        public void Reset()
+        {
+            NavigateBackward(_scoreboardNavigationStack.First());
+            var popScoreboard = _scoreboardNavigationStack.Pop().Scoreboard;
+            popScoreboard?.Dispose();
+            Current = null;
+            Previous = null;
         }
     }
 }

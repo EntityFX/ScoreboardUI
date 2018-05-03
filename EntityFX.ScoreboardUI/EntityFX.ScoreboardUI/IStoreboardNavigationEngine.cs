@@ -18,5 +18,7 @@ namespace EntityFX.ScoreboardUI
         void NavigateFromStart<TScoreboard>(object data = null) where TScoreboard : Scoreboard, new();
 
         void Navigate(Scoreboard scoreboard, StateItem state = null, object data = null);
+
+        void Reset();
     }
 }
