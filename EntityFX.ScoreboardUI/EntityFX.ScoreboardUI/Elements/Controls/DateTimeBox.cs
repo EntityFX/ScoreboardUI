@@ -6,26 +6,52 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
     public class DateTimeBox : TextBox
     {
         public string Format { get; set; } = "d";
-        public DateTime DateTime { get; set; } = DateTime.Today;
+
+        public DateTime? DateTime
+        {
+            get { return _dateTime; }
+            set
+            {
+                _dateTime = value;
+                if (value != null)
+                {
+                    Text = DateTime?.ToString(Format);
+                }
+            }
+        } 
 
         private DateTimeFormat _dateTimeFormat;
+        private DateTime? _dateTime;
 
         public DateTimeBox() : base()
         {
             _dateTimeFormat = new DateTimeFormat(Format);
 
+            Initialize();
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            InitValue();
+        }
+
+        private void InitValue()
+        {
             if (Text != "")
             {
-                if (_dateTimeFormat != null)
+
+                if (_dateTimeFormat != null && DateTime != null)
                 {
-                    DateTime dt = DateTime;
-                    if (!DateTime.TryParse(Text, _dateTimeFormat.FormatProvider, _dateTimeFormat.DateTimeStyles, out dt))
+                    DateTime initial = (DateTime)DateTime;
+                    DateTime dt;
+                    if (!System.DateTime.TryParse(Text, _dateTimeFormat.FormatProvider, _dateTimeFormat.DateTimeStyles, out dt))
                     {
-                        dt = DateTime;
+                        dt = initial;
                     }
                     DateTime = dt;
                 }
-                Text = DateTime.ToString(Format);
+                Text = DateTime?.ToString(Format);
             }
         }
 
@@ -38,10 +64,10 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
                 if (_dateTimeFormat != null)
                 {
                     DateTime dt;
-                    DateTime.TryParse(Text, _dateTimeFormat.FormatProvider, _dateTimeFormat.DateTimeStyles, out dt);
+                    System.DateTime.TryParse(Text, _dateTimeFormat.FormatProvider, _dateTimeFormat.DateTimeStyles, out dt);
                     DateTime = dt;
                 }
-                Text = DateTime.ToString(Format);
+                Text = DateTime?.ToString(Format);
             }
         }
     }

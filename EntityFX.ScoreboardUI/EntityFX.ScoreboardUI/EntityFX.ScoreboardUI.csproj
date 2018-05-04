@@ -3,9 +3,9 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.10</Version>
-    <AssemblyVersion>1.0.10.0</AssemblyVersion>
-    <FileVersion>1.0.10.0</FileVersion>
+    <Version>1.0.11</Version>
+    <AssemblyVersion>1.0.11.0</AssemblyVersion>
+    <FileVersion>1.0.11.0</FileVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>TUI (Text User Interface) compatible with netstandard2.0 Uses only Console class.</Description>
     <PackageLicenseUrl>https://raw.githubusercontent.com/EntityFX/ScoreboardUI/master/LICENSE</PackageLicenseUrl>

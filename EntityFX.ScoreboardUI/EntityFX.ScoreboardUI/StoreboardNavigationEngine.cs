@@ -114,8 +114,11 @@ namespace EntityFX.ScoreboardUI
         public void Reset()
         {
             NavigateBackward(_scoreboardNavigationStack.First());
-            var popScoreboard = _scoreboardNavigationStack.Pop().Scoreboard;
-            popScoreboard?.Dispose();
+            if (_scoreboardNavigationStack.Count > 0)
+            {
+                var popScoreboard = _scoreboardNavigationStack.Pop().Scoreboard;
+                popScoreboard?.Dispose();
+            }
             Current = null;
             Previous = null;
         }

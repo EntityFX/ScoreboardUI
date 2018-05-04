@@ -5,11 +5,34 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
 {
     public class NumericBox : TextBox
     {
-        public Decimal NumberValue { get; set; } = 0;
+        private decimal? _numberValue = null;
+
+        public Decimal? NumberValue
+        {
+            get { return _numberValue; }
+            set
+            {
+                _numberValue = value;
+                if (value != null)
+                {
+                    Text = value.ToString();
+                }
+            }
+        }
 
         public NumericBox() : base()
         {
+            InitValue();
+        }
 
+        public override void Initialize()
+        {
+            base.Initialize();
+            InitValue();
+        }
+
+        private void InitValue()
+        {
             if (Text != "")
             {
 
@@ -27,7 +50,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
         {
             base.OnFocusChanged(isFocused);
 
-            if (!isFocused)
+            if (!isFocused && !string.IsNullOrWhiteSpace(Text))
             {
                 Decimal dt;
                 Decimal.TryParse(Text, NumberStyles.Number, CultureInfo.CurrentCulture, out dt);
@@ -52,7 +75,7 @@ namespace EntityFX.ScoreboardUI.Elements.Controls
                     Decimal dt; 
                     Decimal.TryParse(Text, NumberStyles.Number, CultureInfo.CurrentCulture, out dt);
                     NumberValue = dt;
-                    Text = NumberValue.ToString(CultureInfo.CurrentCulture);
+                    Text = NumberValue != null ? ((decimal)NumberValue).ToString(CultureInfo.CurrentCulture) : "";
                 }
             }
             else if (Char.IsControl(e.KeyInfo.KeyChar))

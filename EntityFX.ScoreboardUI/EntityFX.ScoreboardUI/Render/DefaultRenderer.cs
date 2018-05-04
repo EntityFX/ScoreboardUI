@@ -33,6 +33,11 @@ namespace EntityFX.ScoreboardUI.Render
 
         public void Render(UiElement uiElement)
         {
+            if (!uiElement.IsVisible)
+            {
+                return;
+            }
+
             if (uiElement is Scoreboard scoreboard)
             {
                 RenderBackgroundBox(scoreboard.Location, scoreboard.Size, scoreboard.BackgroundColor);
@@ -136,6 +141,11 @@ namespace EntityFX.ScoreboardUI.Render
 
         private void RenderControl(ControlBase control)
         {
+            if (!control.IsVisible)
+            {
+                return;
+            }
+
             ConsoleColor previousForeground = ConsoleAdapter.ForegroundColor;
             ConsoleColor previousBackground = ConsoleAdapter.BackgroundColor;
             if (control.IsEnabled)

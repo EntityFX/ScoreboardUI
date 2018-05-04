@@ -95,7 +95,7 @@ namespace EntityFX.ScoreboardUI
                     }
 
                     control = _controlsList[_internalFocusIndex];
-                } while (!control.IsEnabled || (!(control is ButtonBase)
+                } while (!control.IsEnabled || !control.IsVisible || (!(control is ButtonBase)
                                                 && !(control is TextBox)
                                                 && !(control is StatusStripButton)
                                                 && !(control is MenuItemButton<object>)
@@ -125,7 +125,7 @@ namespace EntityFX.ScoreboardUI
                 }
 
                 control = _controlsList[_internalFocusIndex];
-            } while (!control.IsEnabled || (!(control is ButtonBase)
+            } while (!control.IsEnabled || !control.IsVisible || (!(control is ButtonBase)
                                             && !(control is TextBox)
                                             && !(control is StatusStripButton)
                                             && !(control is MenuItemButton<object>)
